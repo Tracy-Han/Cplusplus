@@ -24,18 +24,19 @@ protected:
 	GLuint programID;
 	Camera gCamera;
 	glm::vec3 position;
+	GLuint baseInstance;
 
 public:
 	void initializeGL();
 	void setWindowProperty(int x, int y);
 	void setOffScreen(bool off);
 	void setCameraPosition(glm::vec3 pose);
-	void setCamera();
-	void loadGeo();
+	void setCamera(float* pfCameraPositions, int numViews);
+	void loadGeo(float* pfVertexPositions, int numVertices, int* piIndexBuffer, int numFaces);
 	void installShaders();
 	void overdrawRatio();
 	void render();
-	int paintGL();
+	int paintGL(float* pfVertexPositions, int numVertices, int* piIndexBuffer, int numFaces,float* pfCameraPositions,int numViews);
 };
 
 
