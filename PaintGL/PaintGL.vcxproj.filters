@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\tdogl">
+      <UniqueIdentifier>{1cff98f2-c945-4f57-9a1e-7e40b523af9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\tdogl">
+      <UniqueIdentifier>{bd6ca599-4fdf-47c5-8d42-a33a661ad13f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\objLoader">
+      <UniqueIdentifier>{cfdeadfc-8aab-4443-b75a-df71f98c3eb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\objLoader">
+      <UniqueIdentifier>{1d36d21b-4253-4bd3-979c-6c82c1b6cc10}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="objLoader\List.cpp">
+      <Filter>Source Files\objLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="objLoader\Obj_parser.cpp">
+      <Filter>Source Files\objLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="objLoader\ObjLoader.cpp">
+      <Filter>Source Files\objLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="objLoader\string_extra.cpp">
+      <Filter>Source Files\objLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="Tipsify.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MeGLWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="primitives\shapeGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="camera\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="objLoader\List.h">
+      <Filter>Header Files\objLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="objLoader\Obj_parser.h">
+      <Filter>Header Files\objLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="objLoader\ObjLoader.h">
+      <Filter>Header Files\objLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="objLoader\string_extra.h">
+      <Filter>Header Files\objLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="Tipsify.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MeGLWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="primitives\vertex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="primitives\ShapeData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="primitives\shapeGenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="camera\Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="vertexShaderCode.glsl" />
+    <None Include="fragmentShaderCode.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+</Project>
