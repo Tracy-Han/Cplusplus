@@ -32,7 +32,7 @@ protected:
 
 public:
 	void initializeGL();
-	void setWindowProperty(int x, int y);
+	void setWindowProperty(int x, int y,int numViews);
 	void setOffScreen(bool off);
 	void setReadOVR(bool readOVR);
 	void setReadAtomic(bool readAtomic);
@@ -40,9 +40,10 @@ public:
 	void setCamera(float* pfCameraPositions, int numViews);
 	void loadGeo(float* pfVertexPositions, int numVertices, int* piIndexBuffer, int numFaces);
 	void installShaders();
-	void overdrawRatio();
+	void overdrawRatio(float *sliceRatio);
 	void render(int numViews);
-	int paintGL(float* pfVertexPositions, int numVertices, int* piIndexBuffer, int numFaces,float* pfCameraPositions,int numViews);
+	int paintParameter();
+	void showGL();
 	void teminateGL();
 };
 

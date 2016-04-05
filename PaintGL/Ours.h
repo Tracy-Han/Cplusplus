@@ -29,7 +29,7 @@ public:
 	void depthSortPatch(Vector viewpoint, Vector *pvAvgPatchesPositions, int *piIndexBufferIn, int *piClustersIn, int * piIndexBufferTmp);
 	void initMeans(int ** means, Vector ** pvFramesPatchesPositions, int * piIndexBufferIn, int * piClustersIn, float * pfCameraPositions);
 	//function that assign (frame,view) node into each cluster
-	float makeAssignment(int ** assignments, float ** minRatios, float ratios[75][5][162]);
+	float makeAssignment(int ** assignments, float ** minRatios, float ***ratios);
 	// function that implements new face index buffer
 	void newClusterMean(int *piIndexBufferIn, int *piClustersIn,
 		Vector ** pvFramesPatchesPositions, Vector * pvCameraPosiitons, int ** assignments, int clusterId, int *newMean);

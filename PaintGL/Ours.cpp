@@ -221,7 +221,7 @@ void ours::newClusterMean(int *piIndexBufferIn, int *piClustersIn,
 }
 
 // function that implements the assignments
-float ours::makeAssignment(int ** assignments, float ** minRatios, float ratios[75][5][162])
+float ours::makeAssignment(int ** assignments, float ** minRatios, float ***ratios)
 {
 	int x, y, z;
 	float averageRatio = 0;

@@ -54,10 +54,11 @@ void MeGLWindow::setReadAtomic(bool atomicRead)
 {
 	readAtomic = atomicRead;
 }
-void MeGLWindow::setWindowProperty(int x, int y)
+void MeGLWindow::setWindowProperty(int x, int y,int numViews)
 {
-	width = x;
-	height = y;
+	int xSlice = ceil(sqrt(numViews));
+	width = x * xSlice;
+	height = y * xSlice;
 }
 void MeGLWindow::setCameraPosition(glm::vec3 testPos)
 {
@@ -139,8 +140,8 @@ void MeGLWindow::loadGeo(float* pfVertexPositions, int numVertices,int* piIndexB
 //	shapeData myShape = shapeGenerator::makeTriangles();
 //	shapeData myShape = shapeGenerator::makeCube();
 
-	glGenVertexArrays(1, &VAO);
-	glBindVertexArray(VAO);
+	/*glGenVertexArrays(1, &VAO);
+	glBindVertexArray(VAO);*/
 
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -219,7 +220,7 @@ void MeGLWindow::installShaders()
 
 	glUseProgram(programID);
 }
-void MeGLWindow::overdrawRatio()
+void MeGLWindow::overdrawRatio(float *sliceRatio)
 {
 	unsigned char* pixel = new unsigned char[width*height];
 	memset(pixel, 0, width*height*sizeof(unsigned char));
@@ -238,7 +239,7 @@ void MeGLWindow::overdrawRatio()
 	// slice
 	int xSlice = ceil(sqrt(numSlices));
 	int sliceWidth = width / xSlice;
-	float *sliceRatio = new float[numSlices];
+	//float *sliceRatio = new float[numSlices];
 
 	int x, y;
 	float averagePixel = 0.0f;
@@ -284,6 +285,7 @@ void MeGLWindow::overdrawRatio()
 }
 void MeGLWindow::render(int numViews)
 {
+	glBindVertexArray(VAO);
 	if (offScreen)
 	{
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER,fbo);
@@ -295,9 +297,8 @@ void MeGLWindow::render(int numViews)
 	glDrawElementsInstanced(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, NULL, numViews);
 //	glDrawElementsInstancedBaseInstance(GL_TRIANGLES,numIndices,GL_UNSIGNED_INT,NULL,1,baseInstance);
 	
-	overdrawRatio();
 }
-int MeGLWindow::paintGL(float* pfVertexPositions, int numVertices, int* piIndexBuffer, int numFaces, float* pfCameraPositions, int numViews)
+int MeGLWindow::paintParameter()
 {
 
 	if (offScreen)
@@ -323,14 +324,17 @@ int MeGLWindow::paintGL(float* pfVertexPositions, int numVertices, int* piIndexB
 		}
 
 	}
-	/* load geometry*/
-	loadGeo(pfVertexPositions, numVertices, piIndexBuffer, numFaces);
-	
 	/*load shader*/
 	installShaders();
 
-	/* set uniform*/
-	setCamera(pfCameraPositions,numViews);
+	glGenVertexArrays(1, &VAO);
+	glBindVertexArray(VAO);
+
+	///* load geometry*/
+	//loadGeo(pfVertexPositions, numVertices, piIndexBuffer, numFaces);
+
+	///* set uniform*/
+	//setCamera(pfCameraPositions,numViews);
 
 	glViewport(0, 0, width, height);
 	glEnable(GL_CULL_FACE);
@@ -340,28 +344,14 @@ int MeGLWindow::paintGL(float* pfVertexPositions, int numVertices, int* piIndexB
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE, GL_ONE);
 	glColorMask(GL_TRUE, GL_FALSE, GL_FALSE, GL_FALSE);
-
-	glBindVertexArray(VAO);
-//	baseInstance = 0;
-	
-	/* draw geometry*/
-	while (!glfwWindowShouldClose(window))
-	{
-		// drawing contents
-		render(numViews);
-
-		glfwSwapBuffers(window);
-
-		/*baseInstance++;
-		if (baseInstance == numViews)
-		{
-			printf("baseInstace: %u\n", baseInstance);
-			baseInstance = 0;
-		}*/
-		glfwPollEvents();
-	}
+	//glBindVertexArray(VAO); // set it in render
 	
 	return 1;
+}
+void MeGLWindow::showGL()
+{
+	glfwSwapBuffers(window);
+	//glfwPollEvents();
 }
 void MeGLWindow::teminateGL()
 {

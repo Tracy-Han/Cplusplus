@@ -199,7 +199,7 @@ void preProcessing()
 int main(int argc, char *argv[])
 {
 
-	int numClusters = 5; int numViews = 4; int iCacheSize = 20; float lamda = 0.85;
+	int numClusters = 2; int numViews = 4; int iCacheSize = 20; float lamda = 0.85;
 	int characterId,aniId;
 	characterId = 1; aniId = 0;
 
@@ -248,7 +248,8 @@ int main(int argc, char *argv[])
 	/* ours algorithm */
 	// move the mesh to center(0,0,0)
 	ours animationTest;
-	int viewIds[5] = { 148, 54, 17, 92, 45 };
+//	int viewIds[5] = { 148, 54, 17, 92, 45 };
+	int viewIds[5] = { 0,2};
 	
 	Vector **pvFramesPatchesPositions = new_Array2D<Vector>(numFrames, numPatches);
 	int ** means = new_Array2D<int>(numClusters, numFaces * 3);
@@ -256,33 +257,59 @@ int main(int argc, char *argv[])
 	float ** minRatios = new_Array2D<float>(numFrames, numViews);
 
 	animationTest.setParameter(viewIds, numClusters, numFrames, numFaces, numVertices, numPatches,numViews);
-	animationTest.computePatchPos(piIndexBufferOut, pfFramesVertexPositionsIn[0], piPatchesOut, pvFramesPatchesPositions[0]);
+	for (int i = 0; i < numFrames; i++)
+	{
+		animationTest.computePatchPos(piIndexBufferOut, pfFramesVertexPositionsIn[i], piPatchesOut, pvFramesPatchesPositions[i]);
+	}
 	animationTest.initMeans(means, pvFramesPatchesPositions, piIndexBufferOut, piPatchesOut, pfCameraPositions);
 
 	// read back overdraw ratio
 	//test 3d array
 	float ***allRatio = new_Array3D(numFrames, numClusters, numViews);
-//	printf("first allRatio %f \n", allRatio[0][0][0]);
-//	printf("last allRatio %f \n", allRatio[numFrames - 1][numClusters - 1][numViews - 1]);
 
 	/* play with our obj Files */
 	MeGLWindow meWindow;
-	meWindow.setOffScreen(false);
-	meWindow.setWindowProperty(900, 900);
+	meWindow.setOffScreen(true);
+	meWindow.setWindowProperty(450, 450,numViews);
 	meWindow.initializeGL();
-	meWindow.paintGL(pfFramesVertexPositionsIn[0], numVertices, piIndexBufferOut, numFaces, pfCameraPositions, numViews);
+	meWindow.paintParameter();
+	
+	// ?? why we need to first load geometry before loading camera matrix
+	meWindow.loadGeo(pfFramesVertexPositionsIn[0], numVertices, piIndexBufferOut, numFaces);
+	meWindow.setCamera(pfCameraPositions, numViews);
+
+	/* get all ratios */
+	for (int i = 0; i < numFrames; i++)
+	{
+		for (int j = 0; j < numClusters; j++)
+		{
+			printf(" cluster id: %u\n", j);
+			meWindow.loadGeo(pfFramesVertexPositionsIn[i], numVertices, means[j], numFaces);
+			meWindow.render(numViews);
+			meWindow.overdrawRatio(allRatio[i][j]);
+			meWindow.showGL();
+
+		}
+	}
 	meWindow.teminateGL();
 
 	// make assignments
+	float updateRatio;
+	updateRatio = animationTest.makeAssignment(assignments, minRatios, allRatio);
+	printf("updateRatio: %f\n", updateRatio);
 
 	// new cluster mean
+	Vector *pvCameraPositions = (Vector*)pfCameraPositions;
+	int * tempMean = new int[numFaces * 3];
 
+	memset(tempMean, 0, numFaces * 3 * sizeof(int));
+	animationTest.newClusterMean(piIndexBufferOut, piPatchesOut, pvFramesPatchesPositions, pvCameraPositions, assignments, 0, tempMean);
 	// compare which mean to use
-
+	
 	// iteration 
 
 	// output results
-
+	delete[] tempMean;
 
 	
 
