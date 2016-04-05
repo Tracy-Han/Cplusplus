@@ -1,10 +1,13 @@
-﻿Build started 4/4/2016 9:18:43 PM.
+﻿Build started 4/5/2016 9:09:25 PM.
      1>Project "D:\TriangleOrdering\Temp\PaintGL\PaintGL.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ID:\TriangleOrdering\Temp\PaintGL\thirdparty\glew\include /ID:\TriangleOrdering\Temp\PaintGL\thirdparty\glfw\include /ID:\TriangleOrdering\Temp\PaintGL\thirdparty\glm /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt MeGLWindow.cpp
          MeGLWindow.cpp
-     1>MeGLWindow.cpp(189): warning C4101: 'y' : unreferenced local variable
-     1>MeGLWindow.cpp(189): warning C4101: 'x' : unreferenced local variable
+     1>MeGLWindow.cpp(87): warning C4244: 'initializing' : conversion from 'double' to 'int', possible loss of data
+     1>MeGLWindow.cpp(92): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>MeGLWindow.cpp(239): warning C4244: 'initializing' : conversion from 'double' to 'int', possible loss of data
+     1>MeGLWindow.cpp(246): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
+     1>MeGLWindow.cpp(260): warning C4244: '+=' : conversion from 'float' to 'int', possible loss of data
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\TriangleOrdering\Temp\PaintGL\Release\PaintGL.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:D:\TriangleOrdering\Temp\PaintGL\thirdparty\glew\lib /LIBPATH:D:\TriangleOrdering\Temp\PaintGL\thirdparty\glfw\lib glew32.lib glfw3.lib opengl32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\TriangleOrdering\Temp\PaintGL\Release\PaintGL.pdb" /SUBSYSTEM:CONSOLE /STACK:"1600000000","1600000000" /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\TriangleOrdering\Temp\PaintGL\Release\PaintGL.lib" /MACHINE:X86 /SAFESEH Release\Camera.obj
          Release\main.obj
@@ -13,6 +16,7 @@
          Release\ObjLoader.obj
          Release\Obj_parser.obj
          Release\string_extra.obj
+         Release\Ours.obj
          Release\shapeGenerator.obj
          Release\Tipsify.obj
          Generating code
@@ -23,4 +27,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.14
+Time Elapsed 00:00:01.26

@@ -13,12 +13,46 @@ const int NUM_FLOATS_PER_VERTEX = 3;
 const int VERTEX_BYTE_SIZ = NUM_FLOATS_PER_VERTEX*sizeof(float);
 void MeGLWindow::initializeGL()
 {
+	/* initialize window */
+	if (!glfwInit())
+		return ;
+//	GLFWwindow* window;
+	if (offScreen)
+	{
+		glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+		glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
+		window = glfwCreateWindow(width, height, "Hello World", NULL, NULL);
+		glfwHideWindow(window);
+	}
+	else
+	{
+		glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+		window = glfwCreateWindow(width, height, "Hello World", NULL, NULL);
+
+	}
+	if (!window)
+	{
+		glfwTerminate();
+		throw std::runtime_error("glfwCreateWindow failed. Can your hardware handle OpenGL 4.3?");
+	}
+	glfwMakeContextCurrent(window);
+
+	/* initialize glew */
+	glewInit();
 
 }
 
 void MeGLWindow::setOffScreen(bool off)
 {
 	offScreen = off;
+}
+void MeGLWindow::setReadOVR(bool OVRread)
+{
+	readOVR = OVRread;
+}
+void MeGLWindow::setReadAtomic(bool atomicRead)
+{
+	readAtomic = atomicRead;
 }
 void MeGLWindow::setWindowProperty(int x, int y)
 {
@@ -33,7 +67,7 @@ void MeGLWindow::setCamera(float* pfCameraPositions, int numViews)
 {
 	/*Camera gCamera;*/
 	gCamera.setViewportAspectRatio(1.0f*width / height);
-	gCamera.setFieldOfView(55.0f);
+	gCamera.setFieldOfView(45.0f);
 	gCamera.setNearAndFarPlanes(0.1f, 2000.0f);
 //	gCamera.setPosition(position);
 //	gCamera.lookAt(glm::vec3(0.0f, 0.0f, 0.0f));
@@ -48,13 +82,28 @@ void MeGLWindow::setCamera(float* pfCameraPositions, int numViews)
 	//fullTransformMatrix[2] = glm::translate(glm::mat4(), glm::vec3(0.5, -0.5, 0.0)) * glm::scale(glm::mat4(1.0), glm::vec3(1.0 / 2, 1.0 / 2, 1.0)) * gCamera.matrix();
 	//fullTransformMatrix[3] = glm::translate(glm::mat4(), glm::vec3(0.5, 0.5, 0.0)) * glm::scale(glm::mat4(1.0), glm::vec3(1.0 / 2, 1.0 / 2, 1.0)) * gCamera.matrix();
 
+//	int NumSlice = floor(sqrt(numViews)) + 1;
+	numSlices = numViews;
+	int NumSlice = ceil(sqrt(numViews));
+	int sliceX, sliceY;
+	printf("NumSlice: %u\n", NumSlice);
+	float *translatePos = new float[NumSlice];
+	for (int i = 0; i < NumSlice; i++){
+		translatePos[i] = -1 + 1.0 /NumSlice + (2.0 / NumSlice)*i; // original offset plus slot*i 
+	}
+
 	mat4 *fullTransformMatrix = new mat4[numViews];
 	for (int i = 0; i < numViews; i++)
 	{
+		sliceX = i % (int)NumSlice;
+		sliceY = i / (int)NumSlice;
 		gCamera.setPosition(glm::vec3(pfCameraPositions[i * 3], pfCameraPositions[i * 3+1], pfCameraPositions[i * 3+2]));
 		gCamera.lookAt(glm::vec3(0.0f, 0.0f, 0.0f));
-		fullTransformMatrix[i] = gCamera.matrix();
+		fullTransformMatrix[i] = 
+			glm::translate(glm::mat4(), glm::vec3(translatePos[sliceX], translatePos[sliceY], 0.0)) * glm::scale(glm::mat4(1.0), glm::vec3(1.0 / NumSlice, 1.0 / NumSlice, 1.0)) *
+			gCamera.matrix();
 	}
+	delete[] translatePos;
 
 	glGenBuffers(1, &transformMatrixBufferID);
 	glBindBuffer(GL_ARRAY_BUFFER, transformMatrixBufferID);
@@ -186,25 +235,54 @@ void MeGLWindow::overdrawRatio()
 	}
 	glReadPixels(0, 0, width, height, GL_RED,GL_UNSIGNED_BYTE,pixel);
 
+	// slice
+	int xSlice = ceil(sqrt(numSlices));
+	int sliceWidth = width / xSlice;
+	float *sliceRatio = new float[numSlices];
+
 	int x, y;
-	float averagePixel = 0.0f;;
-	float showedPixel = 0.0f;
-	for (int i = 0; i < height; i++) //height
+	float averagePixel = 0.0f;
+	int drawnPixel = 0;
+	int showedPixel = 0.0f;
+	
+	for (int cameraId = 0; cameraId < numSlices; cameraId++)
 	{
-		for (int j = 0; j < width; j++)//width
+		x = cameraId % xSlice; //width
+		y = cameraId / xSlice; //height
+		drawnPixel = 0; showedPixel = 0;
+
+		for (int i = sliceWidth * y; i < sliceWidth*(y + 1); i++) //height = width
 		{
-			if ((int)pixel[i * width + j] > 0)
+			for (int j = sliceWidth * x; j < sliceWidth*(x + 1); j++)//width
 			{
-				averagePixel += (float)pixel[i*width + j];
-				showedPixel += 1.0f;
+				if ((int)pixel[i * width + j] > 0)
+				{
+					drawnPixel += round((float)pixel[i * width + j] / 51.0f);
+					showedPixel++;
+				}
 			}
 		}
+		sliceRatio[cameraId]= (float)drawnPixel / (float)showedPixel;
+		printf("x : %u ,y : %u , ratio: %f \n", x,y, sliceRatio[cameraId]);
 	}
-	averagePixel =averagePixel/showedPixel;
-//	std::cout << averagePixel << std::endl;
+	//for (int i = 0; i < height; i++) //height
+	//{
+	//	for (int j = 0; j < width; j++)//width
+	//	{
+	//		if ((int)pixel[i * width + j] > 2.0)
+	//		{
+	//			drawnPixel += round((float)pixel[i*width + j]/51.0f);
+	//			showedPixel += 1.0f;
+	//		}
+	//	}
+	//}
+	//averagePixel =(float)drawnPixel/(float)showedPixel;
+	//std::cout << averagePixel << std::endl;
+	//
+
 	delete[] pixel;
 }
-void MeGLWindow::render()
+void MeGLWindow::render(int numViews)
 {
 	if (offScreen)
 	{
@@ -214,47 +292,13 @@ void MeGLWindow::render()
 	glClearColor(0, 0, 0, 1); // black
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-	/*glDrawElements(GL_TRIANGLES,
-		numIndices, GL_UNSIGNED_SHORT, NULL);
-*/
-//	glDrawElementsInstanced(GL_TRIANGLES,numIndices,GL_UNSIGNED_SHORT,NULL,4);
-//	glDrawElementsInstancedBaseInstance(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT, 0, 4, 0);
-
-//	glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, NULL);
-//	glDrawElementsInstanced(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, NULL, 4);
-	glDrawElementsInstancedBaseInstance(GL_TRIANGLES,numIndices,GL_UNSIGNED_INT,NULL,1,baseInstance);
-	//overdrawRatio();
+	glDrawElementsInstanced(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, NULL, numViews);
+//	glDrawElementsInstancedBaseInstance(GL_TRIANGLES,numIndices,GL_UNSIGNED_INT,NULL,1,baseInstance);
+	
+	overdrawRatio();
 }
 int MeGLWindow::paintGL(float* pfVertexPositions, int numVertices, int* piIndexBuffer, int numFaces, float* pfCameraPositions, int numViews)
 {
-	/* initialize window */
-	if (!glfwInit())
-		return -1;
-	GLFWwindow* window;
-	if (offScreen)
-	{
-		glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-		glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
-		window = glfwCreateWindow(width, height, "Hello World", NULL, NULL);
-		glfwHideWindow(window);
-	}
-	else
-	{
-		glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-		window = glfwCreateWindow(width, height, "Hello World", NULL, NULL);
-
-	}
-	if (!window)
-	{
-		glfwTerminate();
-		throw std::runtime_error("glfwCreateWindow failed. Can your hardware handle OpenGL 4.3?");
-	}
-	glfwMakeContextCurrent(window);
-	
-	/* initialize glew */
-	glewInit();
-
-	/* set fbo*/
 
 	if (offScreen)
 	{
@@ -298,24 +342,31 @@ int MeGLWindow::paintGL(float* pfVertexPositions, int numVertices, int* piIndexB
 	glColorMask(GL_TRUE, GL_FALSE, GL_FALSE, GL_FALSE);
 
 	glBindVertexArray(VAO);
-	baseInstance = 0;
+//	baseInstance = 0;
+	
 	/* draw geometry*/
 	while (!glfwWindowShouldClose(window))
 	{
 		// drawing contents
-		render();
+		render(numViews);
 
 		glfwSwapBuffers(window);
 
-		baseInstance++;
+		/*baseInstance++;
 		if (baseInstance == numViews)
 		{
+			printf("baseInstace: %u\n", baseInstance);
 			baseInstance = 0;
-		}
+		}*/
 		glfwPollEvents();
 	}
 	
+	return 1;
+}
+void MeGLWindow::teminateGL()
+{
 	/* finish drawing*/
 	glfwTerminate();
-	return 1;
+	printf("terminate window! ");
+
 }

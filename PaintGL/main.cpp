@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 #include "Tipsify.h"
 #include "objLoader/ObjLoader.h"
+#include "Ours.h"
 
 // malloc 2 dimension array
 template <typename T>
@@ -35,6 +36,32 @@ void delete_Array2D(T **arr, int row, int col)
 			arr[i][j].~T();
 	if (arr != NULL)
 		free((void**)arr);
+}
+
+// Edit later
+float *** new_Array3D(int x, int y, int z)
+{
+	float *** array3D = new float** [x];
+	for (int i = 0; i < x; i++)
+	{
+		array3D[i] = new float* [y];
+		for (int j = 0; j < y; j++)
+		{
+			array3D[i][j] = new float[z];
+		}
+	}
+	for (int i = 0; i < x; i++)
+	{
+		for (int j = 0; j < y; j++)
+		{
+			for (int k = 0; k < z; k++)
+			{
+				array3D[i][j][k] = 0.0f;
+			}
+		}
+	}
+
+	return array3D;
 }
 
 void printVector(obj_vector *v)
@@ -105,8 +132,7 @@ void loadData(int * piIndexBuffer, float ** pfFramesVertexPositionsIn, int verte
 				count++;
 			}
 		}
-		moveCenter(pfFramesVertexPositionsIn[frameId], vertexCount);
-		
+		//moveCenter(pfFramesVertexPositionsIn[frameId], vertexCount);		
 	}
 
 }
@@ -139,15 +165,6 @@ void OnError(int errorCode, const char* msg) {
 	throw std::runtime_error(msg);
 }
 
-//void test()
-//{
-//	MeGLWindow meWindow;
-//	meWindow.setOffScreen(false);
-//	meWindow.setWindowProperty(500, 500);
-//	meWindow.setCameraPosition(glm::vec3(4.0f, 4.0f, 3.0f));
-//	meWindow.paintGL();
-//
-//}
 void getBasicInformation(char * objFolder, int* numFaces, int* numVertices)
 {
 	char objFile[150];
@@ -173,10 +190,16 @@ void setFolderPath(char *objFolder, int characterId,int aniId)
 	strcat(objFolder, Animation[aniId]);
 	strcat(objFolder, "/nosub/");
 }
+void preProcessing()
+{
+	/* load data */
+
+	/* linear vertex-locality patches*/
+}
 int main(int argc, char *argv[])
 {
 
-	int numClusters = 5; int numViews = 10; int iCacheSize = 20; float lamda = 0.85;
+	int numClusters = 5; int numViews = 4; int iCacheSize = 20; float lamda = 0.85;
 	int characterId,aniId;
 	characterId = 1; aniId = 0;
 
@@ -206,42 +229,73 @@ int main(int argc, char *argv[])
 	printf(" fist camera position %f , %f , %f \n", pfCameraPositions[0], pfCameraPositions[1], pfCameraPositions[2]);
 	//printf(" 162 camera position %f , %f , %f \n", pfCameraPositions[numViews*3-3], pfCameraPositions[numViews*3-2], pfCameraPositions[numViews*3-1]);
 	
-	/* Generate patches */
+	/* Generate linear face index and Generate vertex-locality patches 
+	   return centered vertices positions and patch positions , linear face, piPatchesOut */
 	int * piIndexBufferOut = new int[numFaces * 3];
-	int * piClustersOut = new int[numFaces];
+	int * piPatchesOut = new int[numFaces];
 	int *piScratch = NULL;
 	/* linear clustering to get vertex-locality patches */
-	int * piClustersTmp = new int[numFaces];
-	FanVertOptimizeVCacheOnly(piIndexBufferIn,piIndexBufferOut,numVertices,numFaces,iCacheSize,piScratch,piClustersTmp,&numPatches);
+	int * piPatchesTmp = new int[numFaces]; int tempNumPatches = 0;
+	FanVertOptimizeVCacheOnly(piIndexBufferIn, piIndexBufferOut, numVertices, numFaces, iCacheSize, piScratch, piPatchesTmp, &numPatches);
 	delete[] piIndexBufferIn; // delete after the v-cache optimization
-	printf("# of patches: %u\n", numPatches);
-	printf("cluster start at %u , end at %u \n", piClustersTmp[0], piClustersTmp[numPatches]);
-	FanVertOptimizeClusterOnly(piIndexBufferOut, numVertices, numFaces, iCacheSize, lamda, piClustersTmp, numPatches, piClustersOut, &numPatches, piScratch);
-	delete[] piClustersTmp;
-	printf("# of patches: %u\n", numPatches);
-	printf("cluster start at %u , end at %u \n", piClustersOut[0], piClustersOut[numPatches]);
+	printf("cache only # of patches: %u\n", numPatches);
+	printf("cluster start at %u , end at %u \n", piPatchesTmp[0], piPatchesTmp[numPatches]);
+	FanVertOptimizeClusterOnly(piIndexBufferOut, numVertices, numFaces, iCacheSize, lamda, piPatchesTmp, numPatches, piPatchesOut, &numPatches, piScratch);
+	delete[] piPatchesTmp;
+	printf("lamda set # of patches: %u\n", numPatches);
+	printf("cluster start at %u , end at %u \n", piPatchesOut[0], piPatchesOut[numPatches]);
+	
+	/* ours algorithm */
+	// move the mesh to center(0,0,0)
+	ours animationTest;
+	int viewIds[5] = { 148, 54, 17, 92, 45 };
+	
+	Vector **pvFramesPatchesPositions = new_Array2D<Vector>(numFrames, numPatches);
+	int ** means = new_Array2D<int>(numClusters, numFaces * 3);
+	int ** assignments = new_Array2D<int>(numFrames, numViews);
+	float ** minRatios = new_Array2D<float>(numFrames, numViews);
 
+	animationTest.setParameter(viewIds, numClusters, numFrames, numFaces, numVertices, numPatches,numViews);
+	animationTest.computePatchPos(piIndexBufferOut, pfFramesVertexPositionsIn[0], piPatchesOut, pvFramesPatchesPositions[0]);
+	animationTest.initMeans(means, pvFramesPatchesPositions, piIndexBufferOut, piPatchesOut, pfCameraPositions);
 
+	// read back overdraw ratio
+	//test 3d array
+	float ***allRatio = new_Array3D(numFrames, numClusters, numViews);
+//	printf("first allRatio %f \n", allRatio[0][0][0]);
+//	printf("last allRatio %f \n", allRatio[numFrames - 1][numClusters - 1][numViews - 1]);
 
 	/* play with our obj Files */
 	MeGLWindow meWindow;
 	meWindow.setOffScreen(false);
-	meWindow.setWindowProperty(800, 800);
-//	meWindow.setCameraPosition(glm::vec3(pfCameraPositions[0], pfCameraPositions[1], pfCameraPositions[2]));
-	meWindow.paintGL(pfFramesVertexPositionsIn[0],numVertices,piIndexBufferOut,numFaces,pfCameraPositions,numViews);
+	meWindow.setWindowProperty(900, 900);
+	meWindow.initializeGL();
+	meWindow.paintGL(pfFramesVertexPositionsIn[0], numVertices, piIndexBufferOut, numFaces, pfCameraPositions, numViews);
+	meWindow.teminateGL();
+
+	// make assignments
+
+	// new cluster mean
+
+	// compare which mean to use
+
+	// iteration 
+
+	// output results
 
 
-	int ** means = new_Array2D<int>(numClusters, numFaces * 3);
-	int ** assignments = new_Array2D<int>(numFrames, numViews);
-	float ** minRatios = new_Array2D<float>(numFrames, numViews);
+	
+
+	
 	/* run our animation methods*/
 	
 
 
 
 	delete_Array2D(pfFramesVertexPositionsIn, numFrames, numVertices);
+	delete_Array2D(pvFramesPatchesPositions, numFrames, numPatches);
 	delete [] piIndexBufferOut;
-	delete[] piClustersOut;
+	delete[] piPatchesOut;
 	delete[] pfCameraPositions;
 	delete_Array2D(means, numClusters, numFaces * 3);
 	delete_Array2D(assignments, numFrames, numViews);

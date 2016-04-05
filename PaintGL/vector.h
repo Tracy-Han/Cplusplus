@@ -34,5 +34,10 @@ static Vector cross(const Vector a, const Vector b)
 	return Vector(a.v[1] * b.v[2] - a.v[2] * b.v[1], a.v[2] * b.v[0] - a.v[0] * b.v[2], a.v[0] * b.v[1] - a.v[1] * b.v[0]);
 }
 
+static float dist(const Vector a, const Vector b)
+{
+	Vector c = Vector(a);
+	return (c - b).length();
+}
 
 #endif

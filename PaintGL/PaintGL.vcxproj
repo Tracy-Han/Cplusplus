@@ -94,6 +94,7 @@
     <ClCompile Include="objLoader\ObjLoader.cpp" />
     <ClCompile Include="objLoader\Obj_parser.cpp" />
     <ClCompile Include="objLoader\string_extra.cpp" />
+    <ClCompile Include="Ours.cpp" />
     <ClCompile Include="primitives\shapeGenerator.cpp" />
     <ClCompile Include="Tipsify.cpp" />
   </ItemGroup>
@@ -104,6 +105,7 @@
     <ClInclude Include="objLoader\ObjLoader.h" />
     <ClInclude Include="objLoader\Obj_parser.h" />
     <ClInclude Include="objLoader\string_extra.h" />
+    <ClInclude Include="Ours.h" />
     <ClInclude Include="primitives\ShapeData.h" />
     <ClInclude Include="primitives\vertex.h" />
     <ClInclude Include="primitives\shapeGenerator.h" />
