@@ -29,6 +29,7 @@ protected:
 	glm::vec3 position;
 	GLuint baseInstance;
 	GLFWwindow* window;
+	GLuint atomicBufferID;
 
 public:
 	void initializeGL();
@@ -45,6 +46,9 @@ public:
 	int paintParameter();
 	void showGL();
 	void teminateGL();
+	void iniAtomicBuffer();
+	void setZeroAtomicBuffer();
+	GLuint readAtomicBuffer();
 };
 
 

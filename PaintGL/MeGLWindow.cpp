@@ -161,6 +161,32 @@ void MeGLWindow::loadGeo(float* pfVertexPositions, int numVertices,int* piIndexB
 	numIndices = numFaces * 3;
 	
 }
+void MeGLWindow::iniAtomicBuffer()
+{
+	glGenBuffers(1, &atomicBufferID);
+	glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, atomicBufferID);
+	glBufferData(GL_ATOMIC_COUNTER_BUFFER, sizeof(GLuint), NULL, GL_DYNAMIC_DRAW);
+	glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, atomicBufferID);
+	glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, 0);
+
+}
+void MeGLWindow::setZeroAtomicBuffer()
+{
+	glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, atomicBufferID);
+	GLuint a = 0;
+	glBufferSubData(GL_ATOMIC_COUNTER_BUFFER, 0, sizeof(GLuint), &a);
+	glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, 0);
+
+}
+GLuint MeGLWindow::readAtomicBuffer()
+{
+	GLuint userCounter;
+	glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, atomicBufferID);
+	glGetBufferSubData(GL_ATOMIC_COUNTER_BUFFER, 0, sizeof(GLuint), &userCounter);
+	glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, 0);
+//	printf("redPixels: %u\n", userCounter);
+	return userCounter;
+}
 bool checkShaderStatus(GLuint shaderID)
 {
 	GLint compileStatus;
@@ -245,7 +271,6 @@ void MeGLWindow::overdrawRatio(float *sliceRatio)
 	float averagePixel = 0.0f;
 	int drawnPixel = 0;
 	int showedPixel = 0.0f;
-	
 	for (int cameraId = 0; cameraId < numSlices; cameraId++)
 	{
 		x = cameraId % xSlice; //width
@@ -266,21 +291,8 @@ void MeGLWindow::overdrawRatio(float *sliceRatio)
 		sliceRatio[cameraId]= (float)drawnPixel / (float)showedPixel;
 		printf("x : %u ,y : %u , ratio: %f \n", x,y, sliceRatio[cameraId]);
 	}
-	//for (int i = 0; i < height; i++) //height
-	//{
-	//	for (int j = 0; j < width; j++)//width
-	//	{
-	//		if ((int)pixel[i * width + j] > 2.0)
-	//		{
-	//			drawnPixel += round((float)pixel[i*width + j]/51.0f);
-	//			showedPixel += 1.0f;
-	//		}
-	//	}
-	//}
-	//averagePixel =(float)drawnPixel/(float)showedPixel;
-	//std::cout << averagePixel << std::endl;
-	//
-
+//	printf("all drawn pixel: %u\n", alldrawnPixel);
+	
 	delete[] pixel;
 }
 void MeGLWindow::render(int numViews)

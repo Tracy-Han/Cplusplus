@@ -277,17 +277,20 @@ int main(int argc, char *argv[])
 	// ?? why we need to first load geometry before loading camera matrix
 	meWindow.loadGeo(pfFramesVertexPositionsIn[0], numVertices, piIndexBufferOut, numFaces);
 	meWindow.setCamera(pfCameraPositions, numViews);
-
+	meWindow.iniAtomicBuffer();
 	/* get all ratios */
 	for (int i = 0; i < numFrames; i++)
 	{
 		for (int j = 0; j < numClusters; j++)
 		{
+//			meWindow.setZeroAtomicBuffer();
 			printf(" cluster id: %u\n", j);
 			meWindow.loadGeo(pfFramesVertexPositionsIn[i], numVertices, means[j], numFaces);
 			meWindow.render(numViews);
 			meWindow.overdrawRatio(allRatio[i][j]);
 			meWindow.showGL();
+//			GLuint drawed = meWindow.readAtomicBuffer();
+//			printf("drawed pixels: %u\n", drawed);
 
 		}
 	}
@@ -305,8 +308,14 @@ int main(int argc, char *argv[])
 	memset(tempMean, 0, numFaces * 3 * sizeof(int));
 	animationTest.newClusterMean(piIndexBufferOut, piPatchesOut, pvFramesPatchesPositions, pvCameraPositions, assignments, 0, tempMean);
 	// compare which mean to use
+	for (int i = 0; i < numFrames; i++)
+	{
+		// load partial camera
+		// loadGeo
+		// render
+		// calculate the drawnPixels
+	}
 	
-	// iteration 
 
 	// output results
 	delete[] tempMean;
