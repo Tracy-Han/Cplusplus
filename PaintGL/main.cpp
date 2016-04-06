@@ -196,6 +196,59 @@ void preProcessing()
 
 	/* linear vertex-locality patches*/
 }
+bool compareClusterBuffer(int clusterId, int ** means, int *tempMean, int **assignments,
+	MeGLWindow meWindow, float *pfCameraPositions, float **pfFramesVertexPositionsIn,
+	int numFrames, int numViews, int numVertices, int numFaces)
+{
+	// why we need swap buffer before reading atomic counters
+	printf("\n ");
+	printf("update cluster %u buffer \n", clusterId);
+	bool clusterMove = false;
+	GLuint oldDrawn = 0;
+	meWindow.setZeroAtomicBuffer();
+	oldDrawn = meWindow.readAtomicBuffer();
+	for (int frameId = 0; frameId < numFrames; frameId++)
+	{
+		meWindow.setClusterCamera(pfCameraPositions, numViews, assignments, frameId, clusterId);
+		meWindow.subLoadGeo(pfFramesVertexPositionsIn[frameId], numVertices, means[clusterId], numFaces);
+	
+		meWindow.render(numViews);
+		meWindow.showGL();
+	}
+	oldDrawn = meWindow.readAtomicBuffer();
+	printf("old drawn pixels: %u\n", oldDrawn);
+	
+
+	meWindow.setZeroAtomicBuffer();
+	GLuint newDrawn = 0;
+	for (int frameId = 0; frameId < numFrames; frameId++)
+	{
+		meWindow.subLoadGeo(pfFramesVertexPositionsIn[frameId], numVertices, tempMean, numFaces);
+		meWindow.setClusterCamera(pfCameraPositions, numViews, assignments, frameId, clusterId);
+	
+		meWindow.render(numViews);
+		meWindow.showGL();
+	}
+	newDrawn = meWindow.readAtomicBuffer();
+	printf("new drawn pixels: %u\n", newDrawn);
+
+
+	if (newDrawn < oldDrawn)
+	{
+		printf("replace old index buffer with new index buffer \n");
+		memcpy(means[clusterId], tempMean, numFaces * 3 * sizeof(int));
+		clusterMove = true;
+	}
+	else
+	{
+		printf("cluster index buffer remain the same \n");
+	}
+	return clusterMove;
+}
+void lloydIteration()
+{
+
+}
 int main(int argc, char *argv[])
 {
 
@@ -223,30 +276,23 @@ int main(int argc, char *argv[])
 	int *piIndexBufferIn = new int[numFaces * 3];
 	float *pfCameraPositions = new float[numViews*3];
 	loadData(piIndexBufferIn, pfFramesVertexPositionsIn, numVertices, numFaces, objFolder, numFrames);
-
 	/* change later might use min ball method */
 	loadCameras(characterId, aniId, pfCameraPositions, numViews);
-	printf(" fist camera position %f , %f , %f \n", pfCameraPositions[0], pfCameraPositions[1], pfCameraPositions[2]);
-	//printf(" 162 camera position %f , %f , %f \n", pfCameraPositions[numViews*3-3], pfCameraPositions[numViews*3-2], pfCameraPositions[numViews*3-1]);
-	
+
 	/* Generate linear face index and Generate vertex-locality patches 
 	   return centered vertices positions and patch positions , linear face, piPatchesOut */
 	int * piIndexBufferOut = new int[numFaces * 3];
 	int * piPatchesOut = new int[numFaces];
-	int *piScratch = NULL;
 	/* linear clustering to get vertex-locality patches */
-	int * piPatchesTmp = new int[numFaces]; int tempNumPatches = 0;
+	int * piPatchesTmp = new int[numFaces]; int *piScratch = NULL;
 	FanVertOptimizeVCacheOnly(piIndexBufferIn, piIndexBufferOut, numVertices, numFaces, iCacheSize, piScratch, piPatchesTmp, &numPatches);
 	delete[] piIndexBufferIn; // delete after the v-cache optimization
 	printf("cache only # of patches: %u\n", numPatches);
-	printf("cluster start at %u , end at %u \n", piPatchesTmp[0], piPatchesTmp[numPatches]);
 	FanVertOptimizeClusterOnly(piIndexBufferOut, numVertices, numFaces, iCacheSize, lamda, piPatchesTmp, numPatches, piPatchesOut, &numPatches, piScratch);
 	delete[] piPatchesTmp;
 	printf("lamda set # of patches: %u\n", numPatches);
-	printf("cluster start at %u , end at %u \n", piPatchesOut[0], piPatchesOut[numPatches]);
 	
 	/* ours algorithm */
-	// move the mesh to center(0,0,0)
 	ours animationTest;
 //	int viewIds[5] = { 148, 54, 17, 92, 45 };
 	int viewIds[5] = { 0,2};
@@ -255,6 +301,9 @@ int main(int argc, char *argv[])
 	int ** means = new_Array2D<int>(numClusters, numFaces * 3);
 	int ** assignments = new_Array2D<int>(numFrames, numViews);
 	float ** minRatios = new_Array2D<float>(numFrames, numViews);
+	Vector *pvCameraPositions = (Vector*)pfCameraPositions;
+	int * tempMean = new int[numFaces * 3];
+	float ***allRatio = new_Array3D(numFrames, numClusters, numViews);
 
 	animationTest.setParameter(viewIds, numClusters, numFrames, numFaces, numVertices, numPatches,numViews);
 	for (int i = 0; i < numFrames; i++)
@@ -263,70 +312,63 @@ int main(int argc, char *argv[])
 	}
 	animationTest.initMeans(means, pvFramesPatchesPositions, piIndexBufferOut, piPatchesOut, pfCameraPositions);
 
-	// read back overdraw ratio
-	//test 3d array
-	float ***allRatio = new_Array3D(numFrames, numClusters, numViews);
-
-	/* play with our obj Files */
+	/* initial window and setup parameter */
 	MeGLWindow meWindow;
-	meWindow.setOffScreen(true);
+	meWindow.setOffScreen(false);
 	meWindow.setWindowProperty(450, 450,numViews);
 	meWindow.initializeGL();
 	meWindow.paintParameter();
-	
-	// ?? why we need to first load geometry before loading camera matrix
-	meWindow.loadGeo(pfFramesVertexPositionsIn[0], numVertices, piIndexBufferOut, numFaces);
-	meWindow.setCamera(pfCameraPositions, numViews);
+	meWindow.setBufferObject(pfFramesVertexPositionsIn[0], numVertices, piIndexBufferOut, numFaces,numViews);
 	meWindow.iniAtomicBuffer();
-	/* get all ratios */
-	for (int i = 0; i < numFrames; i++)
-	{
-		for (int j = 0; j < numClusters; j++)
-		{
-//			meWindow.setZeroAtomicBuffer();
-			printf(" cluster id: %u\n", j);
-			meWindow.loadGeo(pfFramesVertexPositionsIn[i], numVertices, means[j], numFaces);
-			meWindow.render(numViews);
-			meWindow.overdrawRatio(allRatio[i][j]);
-			meWindow.showGL();
-//			GLuint drawed = meWindow.readAtomicBuffer();
-//			printf("drawed pixels: %u\n", drawed);
 
+	int MAXIteration = 10;
+	float *updateRatios = new float[MAXIteration];
+	bool move = false; bool tempMove; int iter;
+	for (iter = 0; iter < MAXIteration;iter++)
+	{
+		printf("\n");
+		printf("%u iteration \n", iter);
+		/* read all the overdraw ratio */
+		meWindow.setCamera(pfCameraPositions, numViews);
+		for (int i = 0; i < numFrames; i++)
+		{
+			for (int j = 0; j < numClusters; j++)
+			{
+				//printf(" cluster id: %u\n", j);
+				meWindow.subLoadGeo(pfFramesVertexPositionsIn[i], numVertices, means[j], numFaces);
+				meWindow.render(numViews);
+				meWindow.overdrawRatio(allRatio[i][j]);
+				meWindow.showGL();
+			}
+		}
+		// make assignments
+		updateRatios[iter] = animationTest.makeAssignment(assignments, minRatios, allRatio);
+		printf("\n");
+		printf("updateRatio: %f\n", updateRatios[iter]);
+
+		move = false;
+		/* update each cluster index buffer*/
+		for (int clusterId = 0; clusterId < numClusters; clusterId++)
+		{
+			//printf("update index buffer for cluster %u \n", clusterId);
+			memset(tempMean, 0, numFaces * 3 * sizeof(int));
+			animationTest.newClusterMean(piIndexBufferOut, piPatchesOut, pvFramesPatchesPositions, pvCameraPositions, assignments, clusterId, tempMean);
+			tempMove = compareClusterBuffer(clusterId, means, tempMean, assignments, meWindow, pfCameraPositions, pfFramesVertexPositionsIn, numFrames, numViews, numVertices, numFaces);
+			if (tempMove == true)
+				move = true;
+		}
+		if (move == false)
+		{
+			printf("\n");
+			printf("no cluster index buffer changes, finish iteration! \n");
+			break;
 		}
 	}
+	printf("iter: %u\n", iter);
 	meWindow.teminateGL();
-
-	// make assignments
-	float updateRatio;
-	updateRatio = animationTest.makeAssignment(assignments, minRatios, allRatio);
-	printf("updateRatio: %f\n", updateRatio);
-
-	// new cluster mean
-	Vector *pvCameraPositions = (Vector*)pfCameraPositions;
-	int * tempMean = new int[numFaces * 3];
-
-	memset(tempMean, 0, numFaces * 3 * sizeof(int));
-	animationTest.newClusterMean(piIndexBufferOut, piPatchesOut, pvFramesPatchesPositions, pvCameraPositions, assignments, 0, tempMean);
-	// compare which mean to use
-	for (int i = 0; i < numFrames; i++)
-	{
-		// load partial camera
-		// loadGeo
-		// render
-		// calculate the drawnPixels
-	}
-	
 
 	// output results
 	delete[] tempMean;
-
-	
-
-	
-	/* run our animation methods*/
-	
-
-
 
 	delete_Array2D(pfFramesVertexPositionsIn, numFrames, numVertices);
 	delete_Array2D(pvFramesPatchesPositions, numFrames, numPatches);

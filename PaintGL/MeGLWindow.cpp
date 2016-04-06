@@ -60,34 +60,18 @@ void MeGLWindow::setWindowProperty(int x, int y,int numViews)
 	width = x * xSlice;
 	height = y * xSlice;
 }
-void MeGLWindow::setCameraPosition(glm::vec3 testPos)
-{
-	position = testPos;
-}
+
 void MeGLWindow::setCamera(float* pfCameraPositions, int numViews)
 {
 	/*Camera gCamera;*/
 	gCamera.setViewportAspectRatio(1.0f*width / height);
 	gCamera.setFieldOfView(45.0f);
 	gCamera.setNearAndFarPlanes(0.1f, 2000.0f);
-//	gCamera.setPosition(position);
-//	gCamera.lookAt(glm::vec3(0.0f, 0.0f, 0.0f));
 
-//	mat4 fullTransformMatrix = /*glm::translate(glm::mat4(), glm::vec3(-0.5, 0.5, 0.0)) * glm::scale(glm::mat4(1.0), glm::vec3(1.0 / 2, 1.0 / 2, 1.0)) **/ gCamera.matrix();
-//	GLint fullTransformMatrixLocation = glGetUniformLocation(programID, "fullTransformMatrix");
-//	glUniformMatrix4fv(fullTransformMatrixLocation, 1, GL_FALSE, &fullTransformMatrix[0][0]);
-	
-	//mat4 fullTransformMatrix[4];
-	//fullTransformMatrix[0] = glm::translate(glm::mat4(), glm::vec3(-0.5, 0.5, 0.0)) * glm::scale(glm::mat4(1.0), glm::vec3(1.0 / 2, 1.0 / 2, 1.0)) * gCamera.matrix();
-	//fullTransformMatrix[1] = glm::translate(glm::mat4(), glm::vec3(-0.5, -0.5, 0.0)) * glm::scale(glm::mat4(1.0), glm::vec3(1.0 / 2, 1.0 / 2, 1.0)) * gCamera.matrix();
-	//fullTransformMatrix[2] = glm::translate(glm::mat4(), glm::vec3(0.5, -0.5, 0.0)) * glm::scale(glm::mat4(1.0), glm::vec3(1.0 / 2, 1.0 / 2, 1.0)) * gCamera.matrix();
-	//fullTransformMatrix[3] = glm::translate(glm::mat4(), glm::vec3(0.5, 0.5, 0.0)) * glm::scale(glm::mat4(1.0), glm::vec3(1.0 / 2, 1.0 / 2, 1.0)) * gCamera.matrix();
-
-//	int NumSlice = floor(sqrt(numViews)) + 1;
 	numSlices = numViews;
 	int NumSlice = ceil(sqrt(numViews));
 	int sliceX, sliceY;
-	printf("NumSlice: %u\n", NumSlice);
+	//printf("NumSlice: %u\n", NumSlice);
 	float *translatePos = new float[NumSlice];
 	for (int i = 0; i < NumSlice; i++){
 		translatePos[i] = -1 + 1.0 /NumSlice + (2.0 / NumSlice)*i; // original offset plus slot*i 
@@ -106,16 +90,69 @@ void MeGLWindow::setCamera(float* pfCameraPositions, int numViews)
 	}
 	delete[] translatePos;
 
+	/* upload camera*/
+	glBindBuffer(GL_ARRAY_BUFFER, transformMatrixBufferID);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, numViews* sizeof(mat4), fullTransformMatrix);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	
+	delete[] fullTransformMatrix;
+}
+void MeGLWindow::setClusterCamera(float* pfCameraPositions, int numViews, int ** assignments,int frameId ,int clusterId)
+{
+	/*Camera gCamera;*/
+	numSlices = numViews;
+	int NumSlice = ceil(sqrt(numViews));
+	int sliceX, sliceY;
+
+	float *translatePos = new float[NumSlice];
+	for (int i = 0; i < NumSlice; i++){
+		translatePos[i] = -1 + 1.0 / NumSlice + (2.0 / NumSlice)*i; // original offset plus slot*i 
+	}
+
+	mat4 *fullTransformMatrix = new mat4[numViews];
+	memset(fullTransformMatrix, 0.0f, numViews*sizeof(mat4));
+
+	for (int i = 0; i < numViews; i++)
+	{
+		sliceX = i % (int)NumSlice;
+		sliceY = i / (int)NumSlice;
+		if (assignments[frameId][i] == clusterId)
+		{
+			gCamera.setPosition(glm::vec3(pfCameraPositions[i * 3], pfCameraPositions[i * 3 + 1], pfCameraPositions[i * 3 + 2]));
+			gCamera.lookAt(glm::vec3(0.0f, 0.0f, 0.0f));
+			fullTransformMatrix[i] =
+				glm::translate(glm::mat4(), glm::vec3(translatePos[sliceX], translatePos[sliceY], 0.0)) * glm::scale(glm::mat4(1.0), glm::vec3(1.0 / NumSlice, 1.0 / NumSlice, 1.0)) *
+				gCamera.matrix();
+		}
+	}
+	delete[] translatePos;
+
+	glBindBuffer(GL_ARRAY_BUFFER, transformMatrixBufferID);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, numViews* sizeof(mat4), fullTransformMatrix);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	delete[] fullTransformMatrix;
+}
+void MeGLWindow::setBufferObject(float* pfVertexPositions, int numVertices,int* piIndexBuffer,int numFaces,int numViews)
+{
+	/* vertex object */
+	glGenBuffers(1, &VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, numVertices * 3 * sizeof(float), NULL, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3 , GL_FLOAT, GL_FALSE, VERTEX_BYTE_SIZ, 0);
+	glBindBuffer(GL_ARRAY_BUFFER,0);
+
+	/* camera object */
 	glGenBuffers(1, &transformMatrixBufferID);
 	glBindBuffer(GL_ARRAY_BUFFER, transformMatrixBufferID);
-	GLuint transformMatrixLocation = glGetAttribLocation(programID,"fullTransformMatrix");
+	GLuint transformMatrixLocation = glGetAttribLocation(programID, "fullTransformMatrix");
 	GLuint pos0 = transformMatrixLocation + 0;
 	GLuint pos1 = transformMatrixLocation + 1;
 	GLuint pos2 = transformMatrixLocation + 2;
 	GLuint pos3 = transformMatrixLocation + 3;
 
-//	glBufferData(GL_ARRAY_BUFFER, sizeof(fullTransformMatrix), &fullTransformMatrix, GL_STATIC_DRAW);
-	glBufferData(GL_ARRAY_BUFFER, numViews* sizeof(mat4), fullTransformMatrix, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, numViews* sizeof(mat4),NULL, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(pos0);
 	glVertexAttribPointer(pos0, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (const GLvoid*)(sizeof(GLfloat) * 0));
 	glEnableVertexAttribArray(pos1);
@@ -124,42 +161,32 @@ void MeGLWindow::setCamera(float* pfCameraPositions, int numViews)
 	glVertexAttribPointer(pos2, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (const GLvoid*)(sizeof(GLfloat) * 8));
 	glEnableVertexAttribArray(pos3);
 	glVertexAttribPointer(pos3, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (const GLvoid*)(sizeof(GLfloat) * 12));
-	
+
 	glVertexAttribDivisor(pos0, 1);
 	glVertexAttribDivisor(pos1, 1);
 	glVertexAttribDivisor(pos2, 1);
 	glVertexAttribDivisor(pos3, 1);
 
-	glBindBuffer(GL_VERTEX_ARRAY,0);
+	glBindBuffer(GL_VERTEX_ARRAY, 0);
 	glBindVertexArray(0);
-	
-	delete[] fullTransformMatrix;
-}
-void MeGLWindow::loadGeo(float* pfVertexPositions, int numVertices,int* piIndexBuffer,int numFaces)
-{
-//	shapeData myShape = shapeGenerator::makeTriangles();
-//	shapeData myShape = shapeGenerator::makeCube();
 
-	/*glGenVertexArrays(1, &VAO);
-	glBindVertexArray(VAO);*/
-
-	glGenBuffers(1, &VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-//	glBufferData(GL_ARRAY_BUFFER, myShape.vertexBufferSize(), myShape.vertices, GL_STATIC_DRAW);
-	glBufferData(GL_ARRAY_BUFFER, numVertices * 3 * sizeof(float), pfVertexPositions, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3 , GL_FLOAT, GL_FALSE, VERTEX_BYTE_SIZ, 0);
-	/*glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, VERTEX_BYTE_SIZ, (const GLvoid*)(sizeof(GLfloat)*3));*/
-
+	/* index buffer object */
 	glGenBuffers(1, &indexBufferID);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferID);
-//	glBufferData(GL_ELEMENT_ARRAY_BUFFER, myShape.indicesBufferSize(), myShape.indices, GL_STATIC_DRAW);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, numFaces * 3 * sizeof(int), piIndexBuffer, GL_STATIC_DRAW);
-//	numIndices = myShape.numIndices;
-//	myShape.cleanup();
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, numFaces * 3 * sizeof(int), NULL, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	numIndices = numFaces * 3;
 	
+}
+void MeGLWindow::subLoadGeo(float* pfVertexPositions, int numVertices, int* piIndexBuffer, int numFaces)
+{
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, numVertices * 3 * sizeof(float), pfVertexPositions);
+	glBindBuffer(GL_ARRAY_BUFFER,0);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferID);
+	glBufferSubData(GL_ELEMENT_ARRAY_BUFFER,0,numFaces *3 * sizeof(int),piIndexBuffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 void MeGLWindow::iniAtomicBuffer()
 {
@@ -289,7 +316,7 @@ void MeGLWindow::overdrawRatio(float *sliceRatio)
 			}
 		}
 		sliceRatio[cameraId]= (float)drawnPixel / (float)showedPixel;
-		printf("x : %u ,y : %u , ratio: %f \n", x,y, sliceRatio[cameraId]);
+//		printf("x : %u ,y : %u , ratio: %f \n", x,y, sliceRatio[cameraId]);
 	}
 //	printf("all drawn pixel: %u\n", alldrawnPixel);
 	
@@ -298,6 +325,7 @@ void MeGLWindow::overdrawRatio(float *sliceRatio)
 void MeGLWindow::render(int numViews)
 {
 	glBindVertexArray(VAO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferID);
 	if (offScreen)
 	{
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER,fbo);

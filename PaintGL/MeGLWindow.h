@@ -37,9 +37,12 @@ public:
 	void setOffScreen(bool off);
 	void setReadOVR(bool readOVR);
 	void setReadAtomic(bool readAtomic);
-	void setCameraPosition(glm::vec3 pose);
 	void setCamera(float* pfCameraPositions, int numViews);
-	void loadGeo(float* pfVertexPositions, int numVertices, int* piIndexBuffer, int numFaces);
+	// This still set a big canvas might change later
+	// 1. small canvas
+	void setClusterCamera(float* pfCameraPositions, int numViews, int ** assignments, int frameId, int clusterId);
+	void setBufferObject(float* pfVertexPositions, int numVertices, int* piIndexBuffer, int numFaces,int numViews);
+	void subLoadGeo(float* pfVertexPositions, int numVertices, int* piIndexBuffer, int numFaces);
 	void installShaders();
 	void overdrawRatio(float *sliceRatio);
 	void render(int numViews);

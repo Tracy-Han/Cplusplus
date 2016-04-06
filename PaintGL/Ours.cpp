@@ -22,8 +22,6 @@ void ours::setParameter(int *viewIds, int Clusters, int framesNum, int facesNum,
 	numClusters = Clusters;
 	pickIds = new int[numClusters];
 	memcpy(pickIds, viewIds, numClusters*sizeof(int));
-	printf("pickIds: %u, %u, %u, %u, %u\n", pickIds[0], pickIds[1], pickIds[2], pickIds[3], pickIds[4]);
-	printf("# of Clusters: %u\n", numClusters);
 
 	numFrames = framesNum;
 	numFaces = facesNum;
