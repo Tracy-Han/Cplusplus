@@ -9,29 +9,27 @@
 class MeGLWindow
 {
 protected:
-	int width;
-	int height;
-	int canvasX;
-	int canvasY;
-	int numSlices;// numViews
-	bool offScreen;
-	bool readOVR;
-	bool readAtomic;
-	GLuint fbo;
-	GLuint gColor;
-	GLuint rboDepth;
-	GLuint VAO;
-	GLuint VBO;
-	GLuint transformMatrixBufferID;
-	GLuint indexBufferID;
-	GLuint programID;
-	Camera gCamera;
-	glm::vec3 position;
-	GLuint baseInstance;
-	GLFWwindow* window;
-	GLuint atomicBufferID;
+	int _width;
+	int _height;
+	int _numSlices;// numViews
+	bool _offScreen;
+	bool _readOVR;
+	bool _readAtomic;
+	GLuint _fbo;
+	GLuint _gColor;
+	GLuint _rboDepth;
+	GLuint _VAO;
+	GLuint _VBO;
+	GLuint _transformMatrixBufferID;
+	GLuint _indexBufferID;
+	GLuint _programID;
+	Camera _gCamera;
+	GLuint _baseInstance;
+	GLFWwindow* _window;
+	GLuint _atomicBufferID;
 
 public:
+	MeGLWindow();
 	void initializeGL();
 	void setWindowProperty(int x, int y,int numViews);
 	void setOffScreen(bool off);

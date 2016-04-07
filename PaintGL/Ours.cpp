@@ -19,22 +19,22 @@ bool sortPatch(const patchSort &a, const patchSort &b)
 
 void ours::setParameter(int *viewIds, int Clusters, int framesNum, int facesNum, int verticesNum, int patchesNum, int viewsNum)
 {
-	numClusters = Clusters;
-	pickIds = new int[numClusters];
-	memcpy(pickIds, viewIds, numClusters*sizeof(int));
-	printf("pickIds: %u, %u, %u, %u, %u\n", pickIds[0], pickIds[1], pickIds[2], pickIds[3], pickIds[4]);
-	printf("# of Clusters: %u\n", numClusters);
+	_numClusters = Clusters;
+	_pickIds = new int[_numClusters];
+	memcpy(_pickIds, viewIds, _numClusters*sizeof(int));
+	/*printf("pickIds: %u, %u, %u, %u, %u\n", _pickIds[0], _pickIds[1], _pickIds[2], _pickIds[3], _pickIds[4]);
+	printf("# of Clusters: %u\n", _numClusters);*/
 
-	numFrames = framesNum;
-	numFaces = facesNum;
-	numVertices = verticesNum;
-	numPatches = patchesNum;
-	numViews = viewsNum;
+	_numFrames = framesNum;
+	_numFaces = facesNum;
+	_numVertices = verticesNum;
+	_numPatches = patchesNum;
+	_numViews = viewsNum;
 
-	//printf("# of Frames: %u\n", numFrames);
-	//printf("# of Faces: %u\n", numFaces);
-	//printf("# of vertices: %u\n", numVertices);
-	//printf("# of Patches: %u\n", numPatches);
+	//printf("# of Frames: %u\n", _numFrames);
+	//printf("# of Faces: %u\n", _numFaces);
+	//printf("# of vertices: %u\n", _numVertices);
+	//printf("# of Patches: %u\n", _numPatches);
 
 }
 //function that implements getting patches positions
@@ -46,22 +46,26 @@ void ours::computePatchPos(int *piIndexBufferIn,
 	int *p = piIndexBufferIn;
 	Vector *pvVertexPositionsIn = (Vector *)pfVertexPositionsIn;
 
-	Vector *pvPatchPositions = new Vector[numPatches];
-	Vector *pvPatchNormals = new Vector[numPatches];
-	float *pfPatchAreas = new float[numPatches];
+	Vector *pvPatchPositions = new Vector[_numPatches];
+	memset(pvPatchPositions, 0.0, _numPatches*sizeof(Vector));
+	Vector *pvPatchNormals = new Vector[_numPatches];
+	memset(pvPatchNormals, 0.0, _numPatches*sizeof(Vector));
+	float *pfPatchAreas = new float[_numPatches];
+	memset(pfPatchAreas, 0.0, _numPatches*sizeof(float));
 	Vector vMeshPositions = Vector(0, 0, 0);
-	for (int i = 0; i < numPatches; i++)
+
+	/*for (int i = 0; i < _numPatches; i++)
 	{
 		pvPatchPositions[i] = Vector(0, 0, 0);
 		pvPatchNormals[i] = Vector(0, 0, 0);
 		pfPatchAreas[i] = 0.0f;
-	}
+	}*/
 
 	/* compute patch positions */
 	int c = 0, cstart = 0; int i, j;
 	int cnext = piPatchesIn[1];
 	float fMArea = 0.f; float fCArea = 0.f;
-	for (i = 0; i <= numFaces; i++)
+	for (i = 0; i <= _numFaces; i++)
 	{
 		if (i == cnext)
 		{
@@ -69,7 +73,7 @@ void ours::computePatchPos(int *piIndexBufferIn,
 			pvPatchPositions[c] /= fCArea * 3.f;
 			pvPatchNormals[c].normalize();
 			c++;
-			if (c == numPatches)
+			if (c == _numPatches)
 				break;
 			cstart = i;
 			cnext = piPatchesIn[c + 1];
@@ -102,12 +106,12 @@ void ours::computePatchPos(int *piIndexBufferIn,
 	vMeshPositions /= fMArea * 3.f;
 	//printf("mesh center position: %f ,%f ,%f \n",vMeshPositions.v[0],vMeshPositions.v[1],vMeshPositions.v[2]);
 	/* what about all delete by mesh positions */
-	//printf("# of patches: %u \n", numPatches);
-	for (int i = 0; i < numVertices; i++)
+	//printf("# of patches: %u \n", _numPatches);
+	for (int i = 0; i < _numVertices; i++)
 	{
 		pvVertexPositionsIn[i] -= vMeshPositions;
 	}
-	for (int i = 0; i < numPatches; i++){
+	for (int i = 0; i < _numPatches; i++){
 		pvPatchesPositions[i] = Vector(pvPatchPositions[i].v[0], pvPatchPositions[i].v[1], pvPatchPositions[i].v[2]) - vMeshPositions;
 	}
 
@@ -119,24 +123,22 @@ void ours::computePatchPos(int *piIndexBufferIn,
 void ours::depthSortPatch(Vector viewpoint, Vector *pvAvgPatchesPositions, int *piIndexBufferIn, int *piPachesIn, int * piIndexBufferTmp)
 {
 	int i, j;
-	patchSort *viewToPatch = new patchSort[numPatches];
-
-	printf("averagePatchPosition 1 %f , %f , %f\n", pvAvgPatchesPositions[0].v[0], pvAvgPatchesPositions[0].v[1], pvAvgPatchesPositions[0].v[2]);
-	printf("averagePatchPosition 100 %f , %f , %f\n", pvAvgPatchesPositions[99].v[0], pvAvgPatchesPositions[99].v[1], pvAvgPatchesPositions[99].v[2]);
-	for (i = 0; i < numPatches; i++)
+	patchSort *viewToPatch = new patchSort[_numPatches];
+	memset(viewToPatch, 0, _numPatches*sizeof(patchSort));
+	//printf("averagePatchPosition 1 %f , %f , %f\n", pvAvgPatchesPositions[0].v[0], pvAvgPatchesPositions[0].v[1], pvAvgPatchesPositions[0].v[2]);
+	//printf("averagePatchPosition 100 %f , %f , %f\n", pvAvgPatchesPositions[99].v[0], pvAvgPatchesPositions[99].v[1], pvAvgPatchesPositions[99].v[2]);
+	for (i = 0; i < _numPatches; i++)
 	{
 		viewToPatch[i].id = i;
 		viewToPatch[i].dist = dist(viewpoint, pvAvgPatchesPositions[i]);
 	}
-	std::sort(viewToPatch, viewToPatch + numPatches, sortPatch);
-
-	
-	printf("viewToPatch 1 dist %f\n", viewToPatch[0].dist);
-	printf("viewToPatch 10 dist %f\n", viewToPatch[9].dist);
-	printf("viewToPatch %u dist %f\n",numPatches, viewToPatch[numPatches-1].dist);
+	std::sort(viewToPatch, viewToPatch + _numPatches, sortPatch);
+	//printf("viewToPatch 1 dist %f\n", viewToPatch[0].dist);
+	//printf("viewToPatch 10 dist %f\n", viewToPatch[9].dist);
+	//printf("viewToPatch %u dist %f\n",_numPatches, viewToPatch[_numPatches-1].dist);
 
 	int jj = 0;
-	for (i = 0; i < numPatches; i++)
+	for (i = 0; i < _numPatches; i++)
 	{
 		for (j = piPachesIn[viewToPatch[i].id] * 3; j < piPachesIn[viewToPatch[i].id + 1] * 3; j++)
 		{
@@ -151,25 +153,24 @@ void ours::initMeans(int ** means, Vector ** pvFramesPatchesPositions, int * piI
 {
 	int i, j;
 
-	Vector *pvAvgPatchesPositions = new Vector[numPatches];
-	memset(pvAvgPatchesPositions, 0, numPatches *sizeof(Vector));
+	Vector *pvAvgPatchesPositions = new Vector[_numPatches];
+	memset(pvAvgPatchesPositions, 0, _numPatches *sizeof(Vector));
 
-	for (i = 0; i < numFrames; i++)
+	for (i = 0; i < _numFrames; i++)
 	{
-		for (j = 0; j < numPatches; j++)
+		for (j = 0; j < _numPatches; j++)
 		{
 			pvAvgPatchesPositions[j] += pvFramesPatchesPositions[i][j];
 		}
 	}
-	for (j = 0; j < numPatches; j++)
+	for (j = 0; j < _numPatches; j++)
 	{
-		pvAvgPatchesPositions[j] /= numFrames;
+		pvAvgPatchesPositions[j] /= _numFrames;
 	}
 
-	for (i = 0; i < numClusters; i++)
+	for (i = 0; i < _numClusters; i++)
 	{
-		Vector viewpoint = Vector(pfCameraPositions[pickIds[i] * 3], pfCameraPositions[pickIds[i] * 3 + 1], pfCameraPositions[pickIds[i] * 3 + 2]);
-		printf("viewpoint %f ,%f ,%f\n", viewpoint.v[0], viewpoint.v[1], viewpoint.v[2]);
+		Vector viewpoint = Vector(pfCameraPositions[_pickIds[i] * 3], pfCameraPositions[_pickIds[i] * 3 + 1], pfCameraPositions[_pickIds[i] * 3 + 2]);
 		depthSortPatch(viewpoint, pvAvgPatchesPositions, piIndexBufferIn, piPachesIn, means[i]);
 	}
 	delete[] pvAvgPatchesPositions;
@@ -179,15 +180,17 @@ void ours::newClusterMean(int *piIndexBufferIn, int *piClustersIn,
 	Vector ** pvFramesPatchesPositions, Vector * pvCameraPosiitons, int ** assignments, int clusterId, int *newMean)
 {
 
-	clusterAssign *cluster = new clusterAssign[numFrames*numViews];
-	patchSort *viewToPatch = new patchSort[numPatches];
+	clusterAssign *cluster = new clusterAssign[_numFrames*_numViews];
+	memset(cluster, 0, _numFrames*_numViews*sizeof(clusterAssign));
+	patchSort *viewToPatch = new patchSort[_numPatches];
+	memset(viewToPatch, 0, _numPatches*sizeof(patchSort));
 
 	int i, j;
 	/* what node is in cluster return avgRatio */
 	int count = 0;
-	for (i = 0; i < numFrames; i++)
+	for (i = 0; i < _numFrames; i++)
 	{
-		for (j = 0; j < numViews; j++)
+		for (j = 0; j < _numViews; j++)
 		{
 			if (assignments[i][j] == clusterId)
 			{
@@ -200,7 +203,7 @@ void ours::newClusterMean(int *piIndexBufferIn, int *piClustersIn,
 
 	/* compute new index buffer */
 	int frameId, viewId;
-	for (i = 0; i < numPatches; i++)
+	for (i = 0; i < _numPatches; i++)
 	{
 		viewToPatch[i].id = i;
 	}
@@ -208,15 +211,15 @@ void ours::newClusterMean(int *piIndexBufferIn, int *piClustersIn,
 	{
 		frameId = cluster[i].frameId;
 		viewId = cluster[i].viewId;
-		for (j = 0; j < numPatches; j++)
+		for (j = 0; j < _numPatches; j++)
 		{
 			viewToPatch[j].dist += dist(pvCameraPosiitons[viewId], pvFramesPatchesPositions[frameId][j]);
 		}
 	}
-	std::sort(viewToPatch, viewToPatch + numPatches, sortPatch);
+	std::sort(viewToPatch, viewToPatch + _numPatches, sortPatch);
 
 	int jj = 0;
-	for (i = 0; i < numPatches; i++)
+	for (i = 0; i < _numPatches; i++)
 	{
 		for (j = piClustersIn[viewToPatch[i].id] * 3; j < piClustersIn[viewToPatch[i].id + 1] * 3; j++)
 		{
@@ -234,24 +237,25 @@ float ours::makeAssignment(int ** assignments, float ** minRatios, float ***rati
 {
 	int x, y, z;
 	float averageRatio = 0;
-	patchSort *tempRatio = new patchSort[numClusters];
-	for (x = 0; x < numFrames; x++)
+	patchSort *tempRatio = new patchSort[_numClusters];
+	memset(tempRatio, 0, _numClusters*sizeof(patchSort));
+	for (x = 0; x < _numFrames; x++)
 	{
-		for (z = 0; z < numViews; z++)
+		for (z = 0; z < _numViews; z++)
 		{
-			for (int y = 0; y < numClusters; y++)
+			for (int y = 0; y < _numClusters; y++)
 			{
 				tempRatio[y].id = y;
 				tempRatio[y].dist = ratios[x][y][z];
 			}
 
-			std::sort(tempRatio, tempRatio + numClusters, sortPatch);
+			std::sort(tempRatio, tempRatio + _numClusters, sortPatch);
 			minRatios[x][z] = tempRatio[0].dist;
 			assignments[x][z] = tempRatio[0].id;
 			averageRatio += minRatios[x][z];
 		}
 	}
-	averageRatio /= numFrames*numViews;
+	averageRatio /= _numFrames*_numViews;
 	return averageRatio;
 
 }

@@ -7,6 +7,9 @@
 #include "objLoader/ObjLoader.h"
 #include "Ours.h"
 
+#define SCREEN_SIZE 400
+#define OFF_SCREEN true
+#define  MAXIteration  10
 // malloc 2 dimension array
 template <typename T>
 T** new_Array2D(int row, int col)
@@ -64,32 +67,6 @@ float *** new_Array3D(int x, int y, int z)
 	return array3D;
 }
 
-void printVector(obj_vector *v)
-{
-	printf("%.2f,", v->v[0]);
-	printf("%.2f,", v->v[1]);
-	printf("%.2f  \n", v->v[2]);
-}
-void moveCenter(float * pfVertexPositions, int vertexCount)
-{
-	float center[3] = { 0, 0, 0 };
-	for (int vertexId = 0; vertexId < vertexCount; vertexId++)
-	{
-		center[0] += pfVertexPositions[vertexId * 3];
-		center[1] += pfVertexPositions[vertexId * 3 + 1];
-		center[2] += pfVertexPositions[vertexId * 3 + 2];
-	}
-	center[0] /= vertexCount;
-	center[1] /= vertexCount;
-	center[2] /= vertexCount;
-
-	for (int vertexId = 0; vertexId < vertexCount; vertexId++)
-	{
-		pfVertexPositions[vertexId * 3] -= center[0];
-		pfVertexPositions[vertexId * 3 + 1] -= center[1];
-		pfVertexPositions[vertexId * 3 + 2] -= center[2];
-	}
-}
 void loadData(int * piIndexBuffer, float ** pfFramesVertexPositionsIn, int vertexCount, int faceCount, char* objFolder, int duration)
 {
 	bool readFace = false;
@@ -132,7 +109,6 @@ void loadData(int * piIndexBuffer, float ** pfFramesVertexPositionsIn, int verte
 				count++;
 			}
 		}
-		//moveCenter(pfFramesVertexPositionsIn[frameId], vertexCount);		
 	}
 
 }
@@ -190,12 +166,6 @@ void setFolderPath(char *objFolder, int characterId,int aniId)
 	strcat(objFolder, Animation[aniId]);
 	strcat(objFolder, "/nosub/");
 }
-void preProcessing()
-{
-	/* load data */
-
-	/* linear vertex-locality patches*/
-}
 bool compareClusterBuffer(int clusterId, int ** means, int *tempMean, int **assignments,
 	MeGLWindow meWindow, float *pfCameraPositions, float **pfFramesVertexPositionsIn,
 	int numFrames, int numViews, int numVertices, int numFaces)
@@ -251,7 +221,11 @@ void lloydIteration()
 }
 int main(int argc, char *argv[])
 {
-	int numClusters = 1; int numViews = 1; int iCacheSize = 20; float lamda = 0.85;
+	int numClusters = 5; int numViews = 162; int iCacheSize = 20; float lamda = 4.0;
+	int aniDuration[6] = { 75, 50, 70, 50, 45, 40 };
+	int viewIds[5] = { 148, 54, 17, 92, 45 };
+	//int viewIds[2] = { 0, 2 };
+
 	int characterId, aniId;
 	characterId = 1; aniId = 0;
 
@@ -260,7 +234,6 @@ int main(int argc, char *argv[])
 	char objFolder[150];
 	setFolderPath(objFolder, characterId, aniId);
 	/* set animation length*/
-	int aniDuration[6] = { 1, 50, 70, 50, 45, 40 };
 	numFrames = aniDuration[aniId];
 	
 	/* get basic information to allocate memory*/
@@ -276,7 +249,7 @@ int main(int argc, char *argv[])
 	loadData(piIndexBufferIn, pfFramesVertexPositionsIn, numVertices, numFaces, objFolder, numFrames);
 	/* change later might use min ball method */
 	loadCameras(characterId, aniId, pfCameraPositions, numViews);
-	printf("camera 0 position: %f ,%f ,%f \n", pfCameraPositions[0], pfCameraPositions[1], pfCameraPositions[2]);
+	//printf("camera 0 position: %f ,%f ,%f \n", pfCameraPositions[0], pfCameraPositions[1], pfCameraPositions[2]);
 
 	/* Generate linear face index and Generate vertex-locality patches 
 	   return centered vertices positions and patch positions , linear face, piPatchesOut */
@@ -291,9 +264,7 @@ int main(int argc, char *argv[])
 	
 	/* ours algorithm */
 	ours animationTest;
-	//int viewIds[5] = { 148, 54, 17, 92, 45 };
-	int viewIds[1] = {0};
-	
+
 	Vector **pvFramesPatchesPositions = new_Array2D<Vector>(numFrames, numPatches);
 	int ** means = new_Array2D<int>(numClusters, numFaces * 3);
 	int ** assignments = new_Array2D<int>(numFrames, numViews);
@@ -311,14 +282,13 @@ int main(int argc, char *argv[])
 
 	/* initial window and setup parameter */
 	MeGLWindow meWindow;
-	meWindow.setOffScreen(false);
-	meWindow.setWindowProperty(400, 400,numViews);
+	meWindow.setOffScreen(OFF_SCREEN);
+	meWindow.setWindowProperty(SCREEN_SIZE, SCREEN_SIZE,numViews);
 	meWindow.initializeGL();
 	meWindow.paintParameter();
 	meWindow.setBufferObject( numVertices,  numFaces,numViews);
 	meWindow.iniAtomicBuffer();
 
-	int MAXIteration = 10;
 	float *updateRatios = new float[MAXIteration];
 	bool move = false; bool tempMove; int iter;
 	for (iter = 0; iter < MAXIteration;iter++)
@@ -331,7 +301,7 @@ int main(int argc, char *argv[])
 		{
 			for (int j = 0; j < numClusters; j++)
 			{
-				printf("frame id : %u , cluster id: %u\n",i, j);
+				//printf("frame id : %u , cluster id: %u\n",i, j);
 				meWindow.subLoadGeo(pfFramesVertexPositionsIn[i], numVertices, means[j], numFaces);
 				meWindow.render(numViews);
 				// read back overdrawRatio because the screen size is quite large so make it half half

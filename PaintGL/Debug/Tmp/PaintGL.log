@@ -1,10 +1,68 @@
-﻿Build started 4/7/2016 3:20:01 PM.
+﻿Build started 4/7/2016 4:57:50 PM.
      1>Project "D:\TriangleOrdering\Temp\PaintGL\PaintGL.vcxproj" on node 2 (Build target(s)).
      1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppBuild.targets(363,5): warning MSB8004: Intermediate Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Intermediate Directory.
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ID:\TriangleOrdering\Temp\PaintGL\thirdparty\glew\include /ID:\TriangleOrdering\Temp\PaintGL\thirdparty\glfw\include /ID:\TriangleOrdering\Temp\PaintGL\thirdparty\glm /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\Tmp\\" /Fd"Debug\Tmp\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Ours.cpp
-         Ours.cpp
-     1>d:\triangleordering\temp\paintgl\ours.cpp(235): warning C4101: 'y' : unreferenced local variable
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ID:\TriangleOrdering\Temp\PaintGL\thirdparty\glew\include /ID:\TriangleOrdering\Temp\PaintGL\thirdparty\glfw\include /ID:\TriangleOrdering\Temp\PaintGL\thirdparty\glm /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\Tmp\\" /Fd"Debug\Tmp\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt MeGLWindow.cpp main.cpp
+         main.cpp
+     1>d:\triangleordering\temp\paintgl\objloader\obj_parser.h(14): warning C4091: 'typedef ' : ignored on left of 'obj_face' when no variable is declared
+     1>d:\triangleordering\temp\paintgl\objloader\obj_parser.h(19): warning C4091: 'typedef ' : ignored on left of 'obj_vector' when no variable is declared
+     1>d:\triangleordering\temp\paintgl\objloader\obj_parser.h(29): warning C4091: 'typedef ' : ignored on left of 'obj_growable_scene_data' when no variable is declared
+     1>d:\triangleordering\temp\paintgl\objloader\obj_parser.h(38): warning C4091: 'typedef ' : ignored on left of 'obj_scene_data' when no variable is declared
+     1>d:\triangleordering\temp\paintgl\main.cpp(78): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\string.h(112) : see declaration of 'strcpy'
+     1>d:\triangleordering\temp\paintgl\main.cpp(79): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\string.h(118) : see declaration of 'strcat'
+     1>d:\triangleordering\temp\paintgl\main.cpp(80): warning C4996: 'itoa': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _itoa. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\stdlib.h(937) : see declaration of 'itoa'
+     1>d:\triangleordering\temp\paintgl\main.cpp(81): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\string.h(118) : see declaration of 'strcat'
+     1>d:\triangleordering\temp\paintgl\main.cpp(82): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\string.h(118) : see declaration of 'strcat'
+     1>d:\triangleordering\temp\paintgl\main.cpp(108): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>d:\triangleordering\temp\paintgl\main.cpp(123): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\string.h(112) : see declaration of 'strcpy'
+     1>d:\triangleordering\temp\paintgl\main.cpp(124): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\string.h(118) : see declaration of 'strcat'
+     1>d:\triangleordering\temp\paintgl\main.cpp(125): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\string.h(118) : see declaration of 'strcat'
+     1>d:\triangleordering\temp\paintgl\main.cpp(126): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\string.h(118) : see declaration of 'strcat'
+     1>d:\triangleordering\temp\paintgl\main.cpp(127): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\string.h(118) : see declaration of 'strcat'
+     1>d:\triangleordering\temp\paintgl\main.cpp(128): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\string.h(118) : see declaration of 'strcat'
+     1>d:\triangleordering\temp\paintgl\main.cpp(132): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\stdio.h(211) : see declaration of 'fopen'
+     1>d:\triangleordering\temp\paintgl\main.cpp(135): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\stdio.h(230) : see declaration of 'fscanf'
+     1>d:\triangleordering\temp\paintgl\main.cpp(147): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\string.h(112) : see declaration of 'strcpy'
+     1>d:\triangleordering\temp\paintgl\main.cpp(148): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\string.h(118) : see declaration of 'strcat'
+     1>d:\triangleordering\temp\paintgl\main.cpp(163): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\string.h(112) : see declaration of 'strcpy'
+     1>d:\triangleordering\temp\paintgl\main.cpp(164): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\string.h(118) : see declaration of 'strcat'
+     1>d:\triangleordering\temp\paintgl\main.cpp(165): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\string.h(118) : see declaration of 'strcat'
+     1>d:\triangleordering\temp\paintgl\main.cpp(166): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\string.h(118) : see declaration of 'strcat'
+     1>d:\triangleordering\temp\paintgl\main.cpp(167): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\string.h(118) : see declaration of 'strcat'
+     1>d:\triangleordering\temp\paintgl\main.cpp(224): warning C4305: 'initializing' : truncation from 'double' to 'float'
+         MeGLWindow.cpp
+     1>d:\triangleordering\temp\paintgl\meglwindow.cpp(78): warning C4244: 'initializing' : conversion from 'double' to 'int', possible loss of data
+     1>d:\triangleordering\temp\paintgl\meglwindow.cpp(91): warning C4244: 'initializing' : conversion from 'double' to 'int', possible loss of data
+     1>d:\triangleordering\temp\paintgl\meglwindow.cpp(95): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>d:\triangleordering\temp\paintgl\meglwindow.cpp(97): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>d:\triangleordering\temp\paintgl\meglwindow.cpp(101): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>d:\triangleordering\temp\paintgl\meglwindow.cpp(125): warning C4244: 'initializing' : conversion from 'double' to 'int', possible loss of data
+     1>d:\triangleordering\temp\paintgl\meglwindow.cpp(129): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>d:\triangleordering\temp\paintgl\meglwindow.cpp(131): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>d:\triangleordering\temp\paintgl\meglwindow.cpp(135): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>d:\triangleordering\temp\paintgl\meglwindow.cpp(317): warning C4244: 'initializing' : conversion from 'double' to 'int', possible loss of data
+     1>d:\triangleordering\temp\paintgl\meglwindow.cpp(334): warning C4244: '+=' : conversion from 'float' to 'int', possible loss of data
+         Generating Code...
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\TriangleOrdering\Temp\PaintGL\Debug\PaintGL.exe" /INCREMENTAL /NOLOGO /LIBPATH:D:\TriangleOrdering\Temp\PaintGL\thirdparty\glew\lib /LIBPATH:D:\TriangleOrdering\Temp\PaintGL\thirdparty\glfw\lib glew32.lib glfw3.lib opengl32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\TriangleOrdering\Temp\PaintGL\Debug\PaintGL.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\TriangleOrdering\Temp\PaintGL\Debug\PaintGL.lib" /MACHINE:X86 Debug\Tmp\Camera.obj
          Debug\Tmp\main.obj
@@ -14,11 +72,11 @@
          Debug\Tmp\Obj_parser.obj
          Debug\Tmp\string_extra.obj
          Debug\Tmp\Ours.obj
-         Debug\Tmp\shapeGenerator.obj
          Debug\Tmp\Tipsify.obj
+     1>LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
          PaintGL.vcxproj -> D:\TriangleOrdering\Temp\PaintGL\Debug\PaintGL.exe
      1>Done Building Project "D:\TriangleOrdering\Temp\PaintGL\PaintGL.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.67
+Time Elapsed 00:00:01.57

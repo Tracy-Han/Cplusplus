@@ -48,9 +48,6 @@
     <ClCompile Include="MeGLWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="primitives\shapeGenerator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="camera\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -78,15 +75,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MeGLWindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="primitives\vertex.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="primitives\ShapeData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="primitives\shapeGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="camera\Camera.h">

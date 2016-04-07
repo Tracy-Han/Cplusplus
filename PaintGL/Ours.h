@@ -9,14 +9,14 @@
 class ours
 {
 private:
-	int *pickIds;
-	int numClusters;
+	int *_pickIds;
+	int _numClusters;
 	// get from preprocessing
-	int numFrames;
-	int numFaces;
-	int numVertices;
-	int numPatches;
-	int numViews;
+	int _numFrames;
+	int _numFaces;
+	int _numVertices;
+	int _numPatches;
+	int _numViews;
 
 public:
 	void setParameter(int *viewIds,int Clusters,int framesNum, int facesNum,int verticesNum,int patchesNum,int viewsNum);
