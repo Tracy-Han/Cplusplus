@@ -251,18 +251,16 @@ void lloydIteration()
 }
 int main(int argc, char *argv[])
 {
-
-	int numClusters = 2; int numViews = 4; int iCacheSize = 20; float lamda = 0.85;
-	int characterId,aniId;
+	int numClusters = 1; int numViews = 1; int iCacheSize = 20; float lamda = 0.85;
+	int characterId, aniId;
 	characterId = 1; aniId = 0;
 
-	int numVertices, numFaces, numFrames,numPatches;
-
+	int numVertices, numFaces, numFrames, numPatches;
 	/*set frame select folder*/
 	char objFolder[150];
 	setFolderPath(objFolder, characterId, aniId);
 	/* set animation length*/
-	int aniDuration[6] = { 5, 50, 70, 50, 45, 40 };
+	int aniDuration[6] = { 1, 50, 70, 50, 45, 40 };
 	numFrames = aniDuration[aniId];
 	
 	/* get basic information to allocate memory*/
@@ -278,6 +276,7 @@ int main(int argc, char *argv[])
 	loadData(piIndexBufferIn, pfFramesVertexPositionsIn, numVertices, numFaces, objFolder, numFrames);
 	/* change later might use min ball method */
 	loadCameras(characterId, aniId, pfCameraPositions, numViews);
+	printf("camera 0 position: %f ,%f ,%f \n", pfCameraPositions[0], pfCameraPositions[1], pfCameraPositions[2]);
 
 	/* Generate linear face index and Generate vertex-locality patches 
 	   return centered vertices positions and patch positions , linear face, piPatchesOut */
@@ -286,16 +285,14 @@ int main(int argc, char *argv[])
 	/* linear clustering to get vertex-locality patches */
 	int * piPatchesTmp = new int[numFaces]; int *piScratch = NULL;
 	FanVertOptimizeVCacheOnly(piIndexBufferIn, piIndexBufferOut, numVertices, numFaces, iCacheSize, piScratch, piPatchesTmp, &numPatches);
-	delete[] piIndexBufferIn; // delete after the v-cache optimization
 	printf("cache only # of patches: %u\n", numPatches);
 	FanVertOptimizeClusterOnly(piIndexBufferOut, numVertices, numFaces, iCacheSize, lamda, piPatchesTmp, numPatches, piPatchesOut, &numPatches, piScratch);
-	delete[] piPatchesTmp;
 	printf("lamda set # of patches: %u\n", numPatches);
 	
 	/* ours algorithm */
 	ours animationTest;
-//	int viewIds[5] = { 148, 54, 17, 92, 45 };
-	int viewIds[5] = { 0,2};
+	//int viewIds[5] = { 148, 54, 17, 92, 45 };
+	int viewIds[1] = {0};
 	
 	Vector **pvFramesPatchesPositions = new_Array2D<Vector>(numFrames, numPatches);
 	int ** means = new_Array2D<int>(numClusters, numFaces * 3);
@@ -315,10 +312,10 @@ int main(int argc, char *argv[])
 	/* initial window and setup parameter */
 	MeGLWindow meWindow;
 	meWindow.setOffScreen(false);
-	meWindow.setWindowProperty(450, 450,numViews);
+	meWindow.setWindowProperty(400, 400,numViews);
 	meWindow.initializeGL();
 	meWindow.paintParameter();
-	meWindow.setBufferObject(pfFramesVertexPositionsIn[0], numVertices, piIndexBufferOut, numFaces,numViews);
+	meWindow.setBufferObject( numVertices,  numFaces,numViews);
 	meWindow.iniAtomicBuffer();
 
 	int MAXIteration = 10;
@@ -334,9 +331,10 @@ int main(int argc, char *argv[])
 		{
 			for (int j = 0; j < numClusters; j++)
 			{
-				//printf(" cluster id: %u\n", j);
+				printf("frame id : %u , cluster id: %u\n",i, j);
 				meWindow.subLoadGeo(pfFramesVertexPositionsIn[i], numVertices, means[j], numFaces);
 				meWindow.render(numViews);
+				// read back overdrawRatio because the screen size is quite large so make it half half
 				meWindow.overdrawRatio(allRatio[i][j]);
 				meWindow.showGL();
 			}
@@ -369,7 +367,8 @@ int main(int argc, char *argv[])
 
 	// output results
 	delete[] tempMean;
-
+	delete[] piPatchesTmp;
+	delete[] piIndexBufferIn; // delete after the v-cache optimization
 	delete_Array2D(pfFramesVertexPositionsIn, numFrames, numVertices);
 	delete_Array2D(pvFramesPatchesPositions, numFrames, numPatches);
 	delete [] piIndexBufferOut;

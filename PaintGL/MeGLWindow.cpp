@@ -133,7 +133,7 @@ void MeGLWindow::setClusterCamera(float* pfCameraPositions, int numViews, int **
 
 	delete[] fullTransformMatrix;
 }
-void MeGLWindow::setBufferObject(float* pfVertexPositions, int numVertices,int* piIndexBuffer,int numFaces,int numViews)
+void MeGLWindow::setBufferObject( int numVertices,int numFaces,int numViews)
 {
 	/* vertex object */
 	glGenBuffers(1, &VBO);
@@ -275,8 +275,10 @@ void MeGLWindow::installShaders()
 }
 void MeGLWindow::overdrawRatio(float *sliceRatio)
 {
-	unsigned char* pixel = new unsigned char[width*height];
-	memset(pixel, 0, width*height*sizeof(unsigned char));
+	printf("width: %u,height %u\n", width, height);
+
+	unsigned char* pixelBuffer = new unsigned char[width*height];
+	memset(pixelBuffer, 0, width*height*sizeof(unsigned char));
 
 	if (offScreen)
 	{
@@ -287,17 +289,14 @@ void MeGLWindow::overdrawRatio(float *sliceRatio)
 	{
 		glReadBuffer(GL_BACK);
 	}
-	glReadPixels(0, 0, width, height, GL_RED,GL_UNSIGNED_BYTE,pixel);
+	glReadPixels(0, 0, width, height, GL_RED,GL_UNSIGNED_BYTE,pixelBuffer);
 
 	// slice
 	int xSlice = ceil(sqrt(numSlices));
 	int sliceWidth = width / xSlice;
-	//float *sliceRatio = new float[numSlices];
 
 	int x, y;
-	float averagePixel = 0.0f;
-	int drawnPixel = 0;
-	int showedPixel = 0.0f;
+	int drawnPixel;int showedPixel=0;
 	for (int cameraId = 0; cameraId < numSlices; cameraId++)
 	{
 		x = cameraId % xSlice; //width
@@ -308,20 +307,95 @@ void MeGLWindow::overdrawRatio(float *sliceRatio)
 		{
 			for (int j = sliceWidth * x; j < sliceWidth*(x + 1); j++)//width
 			{
-				if ((int)pixel[i * width + j] > 0)
+				if ((int)pixelBuffer[i * width + j] > 1)
 				{
-					drawnPixel += round((float)pixel[i * width + j] / 51.0f);
+					drawnPixel += round((float)pixelBuffer[i * width + j] / 51.0f);
 					showedPixel++;
 				}
 			}
 		}
 		sliceRatio[cameraId]= (float)drawnPixel / (float)showedPixel;
-//		printf("x : %u ,y : %u , ratio: %f \n", x,y, sliceRatio[cameraId]);
+		printf("x : %u ,y : %u , ratio: %f \n", x,y, sliceRatio[cameraId]);
 	}
-//	printf("all drawn pixel: %u\n", alldrawnPixel);
 	
-	delete[] pixel;
+	delete[] pixelBuffer;
 }
+
+//void MeGLWindow::halfOverdrawRatio(float *sliceRatio)
+//{
+////	printf("width: %u ,height %u \n", width, height);
+//	int xSlice = ceil(sqrt(numSlices));
+//	int sliceWidth = width / xSlice;
+//	int halfYSlice = ceil(xSlice / 2.0);//xSlice = ySlice
+//	int lowerHalfHeight = halfYSlice * sliceWidth;//sliceHeight = sliceWidth
+//	int higherHalfHeight = height - lowerHalfHeight;
+//	printf("halfYSlice: %u, lower half height %u ,higher half height %u \n", halfYSlice, lowerHalfHeight,higherHalfHeight);
+//
+//	int pixelSize = width*lowerHalfHeight;
+//	unsigned char* pixelBuffer = new unsigned char[pixelSize];
+//	memset(pixelBuffer, 0, width*lowerHalfHeight*sizeof(unsigned char));
+//	if (offScreen)
+//	{
+//		glReadBuffer(GL_COLOR_ATTACHMENT0);
+//		glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo);
+//	}
+//	else
+//	{
+//		glReadBuffer(GL_BACK);
+//	}
+//
+//	int x, y, drawnPixel, showedPixel;
+//	printf("width: %u, lowerHalfHeight %u\n", width, lowerHalfHeight);
+//	glReadPixels(0, 0, width, lowerHalfHeight, GL_RED, GL_UNSIGNED_BYTE, pixelBuffer);
+//	for (int cameraId = 0; cameraId < xSlice*halfYSlice; cameraId++)
+//	{
+//		x = cameraId % xSlice; //width
+//		y = cameraId / xSlice; //height
+//		drawnPixel = 0; showedPixel = 0;
+//
+//		for (int i = sliceWidth * y; i < sliceWidth*(y + 1); i++) //height = width
+//		{
+//			for (int j = sliceWidth * x; j < sliceWidth*(x + 1); j++)//width
+//			{
+//				if ((int)pixelBuffer[i * width + j] > 0)
+//				{
+//					drawnPixel += round((float)pixelBuffer[i * width + j] / 51.0f);
+//					showedPixel++;
+//				}
+//			}
+//		}
+//		sliceRatio[cameraId] = (float)drawnPixel / (float)showedPixel;
+//		printf("x : %u ,y : %u , ratio: %f \n", x,y, sliceRatio[cameraId]);
+//	}
+//
+//	// higher half
+//	memset(pixelBuffer, 0, width*lowerHalfHeight*sizeof(unsigned char));
+//	printf("lowerHalfHeight: %u, height %u\n", lowerHalfHeight, height);
+//	glReadPixels(0, lowerHalfHeight, width,higherHalfHeight, GL_RED, GL_UNSIGNED_BYTE, pixelBuffer);
+//	for (int cameraId = xSlice*halfYSlice; cameraId <numSlices; cameraId++)
+//	{
+//		x = cameraId % xSlice; //width
+//		y = cameraId / xSlice - halfYSlice; //height
+//		drawnPixel = 0; showedPixel = 0;
+//
+//		for (int i = sliceWidth * y; i < sliceWidth*(y + 1); i++) //height = width
+//		{
+//			for (int j = sliceWidth * x; j < sliceWidth*(x + 1); j++)//width
+//			{
+//				if ((int)pixelBuffer[i * width + j] > 0)
+//				{
+//					drawnPixel += round((float)pixelBuffer[i * width + j] / 51.0f);
+//					showedPixel++;
+//				}
+//			}
+//		}
+//		sliceRatio[cameraId] = (float)drawnPixel / (float)showedPixel;
+//		printf("x : %u ,y : %u , ratio: %f \n", x,y, sliceRatio[cameraId]);
+//	}
+//	//printf("all drawn pixel: %u\n", alldrawnPixel);
+//
+//	//delete[] pixel;
+//}
 void MeGLWindow::render(int numViews)
 {
 	glBindVertexArray(VAO);

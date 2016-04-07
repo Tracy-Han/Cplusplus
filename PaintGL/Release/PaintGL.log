@@ -1,4 +1,4 @@
-﻿Build started 4/6/2016 8:24:26 PM.
+﻿Build started 4/6/2016 10:43:14 PM.
      1>Project "D:\TriangleOrdering\Temp\PaintGL\PaintGL.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ID:\TriangleOrdering\Temp\PaintGL\thirdparty\glew\include /ID:\TriangleOrdering\Temp\PaintGL\thirdparty\glfw\include /ID:\TriangleOrdering\Temp\PaintGL\thirdparty\glm /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp
@@ -48,9 +48,9 @@
                  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\string.h(118) : see declaration of 'strcat'
      1>main.cpp(191): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\string.h(118) : see declaration of 'strcat'
-     1>main.cpp(255): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>main.cpp(257): warning C4305: 'initializing' : truncation from 'double' to 'float'
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\TriangleOrdering\Temp\PaintGL\Release\PaintGL.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:D:\TriangleOrdering\Temp\PaintGL\thirdparty\glew\lib /LIBPATH:D:\TriangleOrdering\Temp\PaintGL\thirdparty\glfw\lib glew32.lib glfw3.lib opengl32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\TriangleOrdering\Temp\PaintGL\Release\PaintGL.pdb" /SUBSYSTEM:CONSOLE /STACK:"1600000000","1600000000" /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\TriangleOrdering\Temp\PaintGL\Release\PaintGL.lib" /MACHINE:X86 /SAFESEH Release\Camera.obj
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\TriangleOrdering\Temp\PaintGL\Release\PaintGL.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:D:\TriangleOrdering\Temp\PaintGL\thirdparty\glew\lib /LIBPATH:D:\TriangleOrdering\Temp\PaintGL\thirdparty\glfw\lib glew32.lib glfw3.lib opengl32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\TriangleOrdering\Temp\PaintGL\Release\PaintGL.pdb" /SUBSYSTEM:CONSOLE /STACK:"160000000","160000000" /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\TriangleOrdering\Temp\PaintGL\Release\PaintGL.lib" /MACHINE:X86 /SAFESEH Release\Camera.obj
          Release\main.obj
          Release\MeGLWindow.obj
          Release\List.obj
@@ -68,4 +68,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.33
+Time Elapsed 00:00:01.36

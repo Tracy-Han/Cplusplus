@@ -82,8 +82,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(projectDir)thirdparty\glew\lib;$(projectDir)thirdparty\glfw\lib;</AdditionalLibraryDirectories>
       <AdditionalDependencies>glew32.lib;glfw3.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <StackReserveSize>1600000000</StackReserveSize>
-      <StackCommitSize>1600000000</StackCommitSize>
+      <StackReserveSize>160000000</StackReserveSize>
+      <StackCommitSize>160000000</StackCommitSize>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

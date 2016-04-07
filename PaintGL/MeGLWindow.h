@@ -13,7 +13,7 @@ protected:
 	int height;
 	int canvasX;
 	int canvasY;
-	int numSlices;
+	int numSlices;// numViews
 	bool offScreen;
 	bool readOVR;
 	bool readAtomic;
@@ -41,10 +41,11 @@ public:
 	// This still set a big canvas might change later
 	// 1. small canvas
 	void setClusterCamera(float* pfCameraPositions, int numViews, int ** assignments, int frameId, int clusterId);
-	void setBufferObject(float* pfVertexPositions, int numVertices, int* piIndexBuffer, int numFaces,int numViews);
+	void setBufferObject( int numVertices, int numFaces,int numViews);
 	void subLoadGeo(float* pfVertexPositions, int numVertices, int* piIndexBuffer, int numFaces);
 	void installShaders();
 	void overdrawRatio(float *sliceRatio);
+	//void halfOverdrawRatio(float *sliceRatio);
 	void render(int numViews);
 	int paintParameter();
 	void showGL();
