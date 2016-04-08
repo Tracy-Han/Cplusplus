@@ -4,7 +4,9 @@
 #include <iostream>
 #include <algorithm>
 
+#include "objLoader/ObjLoader.h"
 #include "vector.h"
+#include "MeGLWindow.h"
 
 class ours
 {
@@ -35,6 +37,14 @@ public:
 		Vector ** pvFramesPatchesPositions, Vector * pvCameraPosiitons, int ** assignments, int clusterId, int *newMean);
 
 };
+
+bool compareClusterBuffer(int clusterId, int ** means, int *tempMean, int **assignments,
+	MeGLWindow meWindow, float *pfCameraPositions, float **pfFramesVertexPositionsIn,
+	int numFrames, int numViews, int numVertices, int numFaces);
+void setFolderPath(char *objFolder, int characterId, int aniId);
+void getBasicInformation(char * objFolder, int* numFaces, int* numVertices);
+void loadData(int * piIndexBuffer, float ** pfFramesVertexPositionsIn, int vertexCount, int faceCount, char* objFolder, int duration);
+void loadCameras(int characterId, int aniId, float *pfCameraPositions, int numViews);
 
 #endif 
 

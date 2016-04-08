@@ -1,0 +1,6 @@
+character: 1 Animation: 0
+viewIds: 148  54  17  92  45  
+# of vertice: 38548
+# of faces  75660
+# of patches: 2013
+updateRatio:  1.10169

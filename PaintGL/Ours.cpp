@@ -259,3 +259,151 @@ float ours::makeAssignment(int ** assignments, float ** minRatios, float ***rati
 	return averageRatio;
 
 }
+
+bool compareClusterBuffer(int clusterId, int ** means, int *tempMean, int **assignments,
+	MeGLWindow meWindow, float *pfCameraPositions, float **pfFramesVertexPositionsIn,
+	int numFrames, int numViews, int numVertices, int numFaces)
+{
+	// why we need swap buffer before reading atomic counters
+	printf("\n ");
+	printf("update cluster %u buffer \n", clusterId);
+	bool clusterMove = false;
+	GLuint oldDrawn = 0;
+	meWindow.setZeroAtomicBuffer();
+	oldDrawn = meWindow.readAtomicBuffer();
+	for (int frameId = 0; frameId < numFrames; frameId++)
+	{
+		meWindow.setClusterCamera(pfCameraPositions, numViews, assignments, frameId, clusterId);
+		meWindow.subLoadGeo(pfFramesVertexPositionsIn[frameId], numVertices, means[clusterId], numFaces);
+
+		meWindow.render(numViews);
+		meWindow.showGL();
+	}
+	oldDrawn = meWindow.readAtomicBuffer();
+	printf("old drawn pixels: %u\n", oldDrawn);
+
+
+	meWindow.setZeroAtomicBuffer();
+	GLuint newDrawn = 0;
+	for (int frameId = 0; frameId < numFrames; frameId++)
+	{
+		meWindow.subLoadGeo(pfFramesVertexPositionsIn[frameId], numVertices, tempMean, numFaces);
+		meWindow.setClusterCamera(pfCameraPositions, numViews, assignments, frameId, clusterId);
+
+		meWindow.render(numViews);
+		meWindow.showGL();
+	}
+	newDrawn = meWindow.readAtomicBuffer();
+	printf("new drawn pixels: %u\n", newDrawn);
+
+
+	if (newDrawn < oldDrawn)
+	{
+		printf("replace old index buffer with new index buffer \n");
+		memcpy(means[clusterId], tempMean, numFaces * 3 * sizeof(int));
+		clusterMove = true;
+	}
+	else
+	{
+		printf("cluster index buffer remain the same \n");
+	}
+	return clusterMove;
+}
+
+void setFolderPath(char *objFolder, int characterId, int aniId)
+{
+	char Character[5][20] = { "Ganfaul_M_Aure", "Kachujin_G_Rosales", "Maw_J_Laygo", "Nightshade" };
+	char Animation[6][40] = { "dancing_maraschino_step", "Standing_2H_Cast_Spell", "Standing_2H_Magic_Area_Attack", "Standing_Jump", "Standing_React_Death_Backward", "Standing_React_Large_From_Back" };
+
+	strcpy(objFolder, "D:/TriangleOrdering/VF/Obj/");
+	strcat(objFolder, Character[characterId]);
+	strcat(objFolder, "/");
+	strcat(objFolder, Animation[aniId]);
+	strcat(objFolder, "/subdiv2/");
+}
+
+void loadData(int * piIndexBuffer, float ** pfFramesVertexPositionsIn, int vertexCount, int faceCount, char* objFolder, int duration)
+{
+	bool readFace = false;
+
+	char filePath[100]; char buffer[10];
+	for (int frameId = 0; frameId < duration; frameId++)
+	{
+
+		strcpy(filePath, objFolder);
+		strcat(filePath, "frame");
+		itoa(frameId + 1, buffer, 10);
+		strcat(filePath, buffer);
+		strcat(filePath, ".obj");
+		//printf("%s \n",filePath);
+
+		objLoader *Loader = new objLoader();
+		Loader->load(filePath);
+
+		if (!readFace)
+		{
+			//printf("read face indices \n");
+			int count = 0;
+			for (int i = 0; i < faceCount; i++)
+			{
+				for (int j = 0; j < 3; j++)
+				{
+					piIndexBuffer[count] = Loader->faceList[i]->vertex_index[j];
+					count++;
+				}
+			}
+			readFace = true;
+		}
+
+		int count = 0;
+		for (int vertexId = 0; vertexId < vertexCount; vertexId++)
+		{
+			for (int j = 0; j < 3; j++)
+			{
+				pfFramesVertexPositionsIn[frameId][count] = Loader->vertexList[vertexId]->v[j];
+				count++;
+			}
+		}
+	}
+
+}
+
+void loadCameras(int characterId, int aniId, float *pfCameraPositions, int numViews)
+{
+	char Character[5][20] = { "Ganfaul_M_Aure", "Kachujin_G_Rosales", "Maw_J_Laygo", "Nightshade" };
+	char Animation[6][40] = { "dancing_maraschino_step", "Standing_2H_Cast_Spell", "Standing_2H_Magic_Area_Attack", "Standing_Jump", "Standing_React_Death_Backward", "Standing_React_Large_From_Back" };
+
+
+	char cameraPath[150];
+	strcpy(cameraPath, "D:/TriangleOrdering/Temp/Animation/VerticeFace/");
+	strcat(cameraPath, Character[characterId]);
+	strcat(cameraPath, "/");
+	strcat(cameraPath, Animation[aniId]);
+	strcat(cameraPath, "/");
+	strcat(cameraPath, "newViewpoint3.txt");
+	//	printf("%s \n",cameraPath);
+
+	FILE * myFile;
+	myFile = fopen(cameraPath, "r");
+	for (int i = 0; i < numViews * 3; i++)
+	{
+		fscanf(myFile, "%f \n", &pfCameraPositions[i]);
+	}
+	fclose(myFile);
+}
+
+void getBasicInformation(char * objFolder, int* numFaces, int* numVertices)
+{
+	char objFile[150];
+	strcpy(objFile, objFolder);
+	strcat(objFile, "frame1.obj");
+
+
+	objLoader *testLoader = new objLoader();
+	testLoader->load(objFile);
+
+	*numVertices = testLoader->vertexCount;
+	*numFaces = testLoader->faceCount;
+
+}
+

@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <iostream>
+#include <fstream>
+#include <ctime>
 
 #include "MeGLWindow.h"
 #include <GLFW/glfw3.h>
@@ -40,7 +42,6 @@ void delete_Array2D(T **arr, int row, int col)
 	if (arr != NULL)
 		free((void**)arr);
 }
-
 // Edit later
 float *** new_Array3D(int x, int y, int z)
 {
@@ -67,167 +68,27 @@ float *** new_Array3D(int x, int y, int z)
 	return array3D;
 }
 
-void loadData(int * piIndexBuffer, float ** pfFramesVertexPositionsIn, int vertexCount, int faceCount, char* objFolder, int duration)
-{
-	bool readFace = false;
-
-	char filePath[100]; char buffer[10];
-	for (int frameId = 0; frameId < duration; frameId++)
-	{
-		
-		strcpy(filePath, objFolder);
-		strcat(filePath, "frame");
-		itoa(frameId + 1, buffer, 10);
-		strcat(filePath, buffer);
-		strcat(filePath, ".obj");
-		//printf("%s \n",filePath);
-
-		objLoader *Loader = new objLoader();
-		Loader->load(filePath);
-
-		if (!readFace)
-		{
-			//printf("read face indices \n");
-			int count = 0;
-			for (int i = 0; i < faceCount; i++)
-			{
-				for (int j = 0; j < 3; j++)
-				{
-					piIndexBuffer[count] = Loader->faceList[i]->vertex_index[j];
-					count++;
-				}
-			}
-			readFace = true;
-		}
-
-		int count = 0;
-		for (int vertexId = 0; vertexId < vertexCount; vertexId++)
-		{
-			for (int j = 0; j < 3; j++)
-			{
-				pfFramesVertexPositionsIn[frameId][count] = Loader->vertexList[vertexId]->v[j];
-				count++;
-			}
-		}
-	}
-
-}
-
-void loadCameras(int characterId,int aniId,float *pfCameraPositions,int numViews)
-{
-	char Character[5][20] = { "Ganfaul_M_Aure", "Kachujin_G_Rosales", "Maw_J_Laygo", "Nightshade" };
-	char Animation[6][40] = { "dancing_maraschino_step", "Standing_2H_Cast_Spell", "Standing_2H_Magic_Area_Attack", "Standing_Jump", "Standing_React_Death_Backward", "Standing_React_Large_From_Back" };
-
-
-	char cameraPath[150];
-	strcpy(cameraPath, "D:/TriangleOrdering/Temp/Animation/VerticeFace/");
-	strcat(cameraPath, Character[characterId]);
-	strcat(cameraPath, "/");
-	strcat(cameraPath, Animation[aniId]);
-	strcat(cameraPath, "/");
-	strcat(cameraPath, "newViewpoint3.txt");
-//	printf("%s \n",cameraPath);
-
-	FILE * myFile;
-	myFile = fopen(cameraPath, "r");
-	for (int i = 0; i < numViews*3; i++)
-	{
-			fscanf(myFile, "%f \n", &pfCameraPositions[i]);
-	}
-	fclose(myFile);
-}
-
 void OnError(int errorCode, const char* msg) {
 	throw std::runtime_error(msg);
 }
 
-void getBasicInformation(char * objFolder, int* numFaces, int* numVertices)
-{
-	char objFile[150];
-	strcpy(objFile, objFolder);
-	strcat(objFile, "frame1.obj");
-	
-
-	objLoader *testLoader = new objLoader();
-	testLoader->load(objFile);
-
-	*numVertices = testLoader->vertexCount;
-	*numFaces = testLoader->faceCount;
-	
-}
-void setFolderPath(char *objFolder, int characterId,int aniId)
-{
-	char Character[5][20] = { "Ganfaul_M_Aure", "Kachujin_G_Rosales", "Maw_J_Laygo", "Nightshade" };
-	char Animation[6][40] = { "dancing_maraschino_step", "Standing_2H_Cast_Spell", "Standing_2H_Magic_Area_Attack", "Standing_Jump", "Standing_React_Death_Backward", "Standing_React_Large_From_Back" };
-
-	strcpy(objFolder, "D:/TriangleOrdering/VF/Obj/");
-	strcat(objFolder, Character[characterId]);
-	strcat(objFolder, "/");
-	strcat(objFolder, Animation[aniId]);
-	strcat(objFolder, "/nosub/");
-}
-bool compareClusterBuffer(int clusterId, int ** means, int *tempMean, int **assignments,
-	MeGLWindow meWindow, float *pfCameraPositions, float **pfFramesVertexPositionsIn,
-	int numFrames, int numViews, int numVertices, int numFaces)
-{
-	// why we need swap buffer before reading atomic counters
-	printf("\n ");
-	printf("update cluster %u buffer \n", clusterId);
-	bool clusterMove = false;
-	GLuint oldDrawn = 0;
-	meWindow.setZeroAtomicBuffer();
-	oldDrawn = meWindow.readAtomicBuffer();
-	for (int frameId = 0; frameId < numFrames; frameId++)
-	{
-		meWindow.setClusterCamera(pfCameraPositions, numViews, assignments, frameId, clusterId);
-		meWindow.subLoadGeo(pfFramesVertexPositionsIn[frameId], numVertices, means[clusterId], numFaces);
-	
-		meWindow.render(numViews);
-		meWindow.showGL();
-	}
-	oldDrawn = meWindow.readAtomicBuffer();
-	printf("old drawn pixels: %u\n", oldDrawn);
-	
-
-	meWindow.setZeroAtomicBuffer();
-	GLuint newDrawn = 0;
-	for (int frameId = 0; frameId < numFrames; frameId++)
-	{
-		meWindow.subLoadGeo(pfFramesVertexPositionsIn[frameId], numVertices, tempMean, numFaces);
-		meWindow.setClusterCamera(pfCameraPositions, numViews, assignments, frameId, clusterId);
-	
-		meWindow.render(numViews);
-		meWindow.showGL();
-	}
-	newDrawn = meWindow.readAtomicBuffer();
-	printf("new drawn pixels: %u\n", newDrawn);
-
-
-	if (newDrawn < oldDrawn)
-	{
-		printf("replace old index buffer with new index buffer \n");
-		memcpy(means[clusterId], tempMean, numFaces * 3 * sizeof(int));
-		clusterMove = true;
-	}
-	else
-	{
-		printf("cluster index buffer remain the same \n");
-	}
-	return clusterMove;
-}
-void lloydIteration()
-{
-
-}
 int main(int argc, char *argv[])
 {
-	int numClusters = 5; int numViews = 162; int iCacheSize = 20; float lamda = 4.0;
+	int numClusters = 5; int numViews = 162; int iCacheSize = 20; float lamda = 0.85;
 	int aniDuration[6] = { 75, 50, 70, 50, 45, 40 };
 	int viewIds[5] = { 148, 54, 17, 92, 45 };
-	//int viewIds[2] = { 0, 2 };
 
 	int characterId, aniId;
+	//characterId = atoi(argv[1]);
+	//aniId = atoi(argv[2]);
 	characterId = 1; aniId = 0;
+	printf("charcterIndex: %u, aniId: %u\n", characterId, aniId);
+	std::fstream outfile("subdiv2-results.txt", std::ofstream::app);
+	outfile << "character: " << characterId << " Animation: " << aniId << std::endl;
+	outfile << "viewIds: ";
+	for (int i = 0; i < numClusters; i++)
+		outfile << viewIds[i]<<"  ";
+	outfile << std::endl;
 
 	int numVertices, numFaces, numFrames, numPatches;
 	/*set frame select folder*/
@@ -239,8 +100,10 @@ int main(int argc, char *argv[])
 	/* get basic information to allocate memory*/
 	getBasicInformation(objFolder, &numFaces, &numVertices);
 	printf("%s \n", objFolder);
-	printf("# of vertices: %u\n", numVertices);
+	printf("# of vertice: %u\n", numVertices);
 	printf("# of faces: %u\n", numFaces);
+	outfile << "# of vertice: " << numVertices << std::endl;
+	outfile << "# of faces  " << numFaces << std::endl;
 
 	/* allocate memory*/
 	float **pfFramesVertexPositionsIn = new_Array2D<float>(numFrames, numVertices * 3);
@@ -252,7 +115,7 @@ int main(int argc, char *argv[])
 	//printf("camera 0 position: %f ,%f ,%f \n", pfCameraPositions[0], pfCameraPositions[1], pfCameraPositions[2]);
 
 	/* Generate linear face index and Generate vertex-locality patches 
-	   return centered vertices positions and patch positions , linear face, piPatchesOut */
+	   return centered vertice positions and patch positions , linear face, piPatchesOut */
 	int * piIndexBufferOut = new int[numFaces * 3];
 	int * piPatchesOut = new int[numFaces];
 	/* linear clustering to get vertex-locality patches */
@@ -261,7 +124,8 @@ int main(int argc, char *argv[])
 	printf("cache only # of patches: %u\n", numPatches);
 	FanVertOptimizeClusterOnly(piIndexBufferOut, numVertices, numFaces, iCacheSize, lamda, piPatchesTmp, numPatches, piPatchesOut, &numPatches, piScratch);
 	printf("lamda set # of patches: %u\n", numPatches);
-	
+	outfile << "# of patches: " << numPatches << std::endl;
+
 	/* ours algorithm */
 	ours animationTest;
 
@@ -273,6 +137,8 @@ int main(int argc, char *argv[])
 	int * tempMean = new int[numFaces * 3];
 	float ***allRatio = new_Array3D(numFrames, numClusters, numViews);
 
+	time_t tstart, tend;
+	tstart = time(0);
 	animationTest.setParameter(viewIds, numClusters, numFrames, numFaces, numVertices, numPatches,numViews);
 	for (int i = 0; i < numFrames; i++)
 	{
@@ -289,6 +155,7 @@ int main(int argc, char *argv[])
 	meWindow.setBufferObject( numVertices,  numFaces,numViews);
 	meWindow.iniAtomicBuffer();
 
+	outfile << "updateRatio: ";
 	float *updateRatios = new float[MAXIteration];
 	bool move = false; bool tempMove; int iter;
 	for (iter = 0; iter < MAXIteration;iter++)
@@ -313,7 +180,7 @@ int main(int argc, char *argv[])
 		updateRatios[iter] = animationTest.makeAssignment(assignments, minRatios, allRatio);
 		printf("\n");
 		printf("updateRatio: %f\n", updateRatios[iter]);
-
+		outfile << " " << updateRatios[iter];
 		move = false;
 		/* update each cluster index buffer*/
 		for (int clusterId = 0; clusterId < numClusters; clusterId++)
@@ -332,6 +199,8 @@ int main(int argc, char *argv[])
 			break;
 		}
 	}
+	tend = time(0);
+	outfile << "\n It took" << difftime(tend, tstart) << "second(s) to finish " << (iter + 1) << " times iteration " << std::endl;
 	printf("iter: %u\n", iter);
 	meWindow.teminateGL();
 
@@ -348,7 +217,6 @@ int main(int argc, char *argv[])
 	delete_Array2D(assignments, numFrames, numViews);
 	delete_Array2D(minRatios, numFrames, numViews);
 
-	getchar();
 	return 1;
 	
 }
