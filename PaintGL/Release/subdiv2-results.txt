@@ -1,24 +1,45 @@
-character: 1 Animation: 0
+character: 0 Animation: 0
 viewIds: 148  54  17  92  45  
-# of vertice: 38548
-# of faces  75660
-# of patches: 2013
-updateRatio:  1.10169 1.06049 1.05396 1.05235 1.05172 1.05148
- It took320second(s) to finish 6 times iteration 
-character: 1 Animation: 0
+# of vertice: 43259
+# of faces  82806
+# of patches: 2709
+updateRatio:  1.19012 1.10965 1.09808
+ It took174second(s) to finish 3 times iteration 
+character: 0 Animation: 1
 viewIds: 148  54  17  92  45  
-# of vertice: 38548
-# of faces  75660
-# of patches: 2013
-updateRatio:  1.10169 1.06049 1.05396 1.05235 1.05172 1.05148
- It took312second(s) to finish 6 times iteration 
-character: 1 Animation: 0
+# of vertice: 86518
+# of faces  165612
+# of patches: 5478
+updateRatio:  1.13579 1.0983 1.09684
+ It took123second(s) to finish 3 times iteration 
+character: 0 Animation: 2
 viewIds: 148  54  17  92  45  
-# of vertice: 38548
-# of faces  75660
-# of patches: 2013
-updateRatio:  1.10169 1.06049 1.05396 1.05235 1.05172 1.05148
- It took312second(s) to finish 6 times iteration 
+# of vertice: 43259
+# of faces  82806
+# of patches: 2644
+updateRatio:  1.1516 1.10188 1.10106 1.10093
+ It took202second(s) to finish 4 times iteration 
+character: 0 Animation: 3
+viewIds: 148  54  17  92  45  
+# of vertice: 43259
+# of faces  82806
+# of patches: 2741
+updateRatio:  1.13638 1.09152 1.08998 1.08957
+ It took148second(s) to finish 4 times iteration 
+character: 0 Animation: 4
+viewIds: 148  54  17  92  45  
+# of vertice: 43259
+# of faces  82806
+# of patches: 2649
+updateRatio:  1.14302 1.11224 1.10892 1.10885
+ It took122second(s) to finish 4 times iteration 
+character: 0 Animation: 5
+viewIds: 148  54  17  92  45  
+# of vertice: 43259
+# of faces  82806
+# of patches: 2552
+updateRatio:  1.13444 1.09446 1.09205
+ It took86second(s) to finish 3 times iteration 
 character: 1 Animation: 0
 viewIds: 148  54  17  92  45  
 # of vertice: 38548
@@ -26,8 +47,122 @@ viewIds: 148  54  17  92  45
 # of patches: 2013
 updateRatio:  1.10169 1.06049 1.05396 1.05235 1.05172 1.05148
  It took313second(s) to finish 6 times iteration 
-character: 1 Animation: 0
+character: 1 Animation: 1
+viewIds: 148  54  17  92  45  
+# of vertice: 77096
+# of faces  151320
+# of patches: 4320
+updateRatio:  1.0814 1.0516 1.04827 1.04713 1.04669 1.04644
+ It took224second(s) to finish 6 times iteration 
+character: 1 Animation: 2
 viewIds: 148  54  17  92  45  
 # of vertice: 38548
 # of faces  75660
-# of patches: 2013
+# of patches: 2179
+updateRatio:  1.08324 1.05547 1.05387 1.053 1.05162 1.0516
+ It took266second(s) to finish 6 times iteration 
+character: 1 Animation: 3
+viewIds: 148  54  17  92  45  
+# of vertice: 38548
+# of faces  75660
+# of patches: 2206
+updateRatio:  1.07262 1.04714 1.04473 1.04461
+ It took134second(s) to finish 4 times iteration 
+character: 1 Animation: 4
+viewIds: 148  54  17  92  45  
+# of vertice: 38548
+# of faces  75660
+# of patches: 2190
+updateRatio:  1.08582 1.06059 1.05996
+ It took82second(s) to finish 3 times iteration 
+character: 1 Animation: 5
+viewIds: 148  54  17  92  45  
+# of vertice: 38548
+# of faces  75660
+# of patches: 2172
+updateRatio:  1.07584 1.04753 1.0461 1.04508 1.04507 1.04506
+ It took154second(s) to finish 6 times iteration 
+character: 2 Animation: 0
+viewIds: 148  54  17  92  45  
+# of vertice: 42662
+# of faces  83448
+# of patches: 2591
+updateRatio:  1.12061 1.06747 1.06121 1.06097 1.06085
+ It took298second(s) to finish 5 times iteration 
+character: 2 Animation: 1
+viewIds: 148  54  17  92  45  
+# of vertice: 85324
+# of faces  166896
+# of patches: 5498
+updateRatio:  1.10105 1.06994 1.0684 1.06779 1.06655 1.06631 1.06573 1.06563 1.06551 1.0652
+ It took439second(s) to finish 11 times iteration 
+character: 2 Animation: 2
+viewIds: 148  54  17  92  45  
+# of vertice: 42662
+# of faces  83448
+# of patches: 2732
+updateRatio:  1.10211 1.06349 1.06121 1.05993 1.05982 1.0598 1.0598 1.05972
+ It took437second(s) to finish 8 times iteration 
+character: 2 Animation: 3
+viewIds: 148  54  17  92  45  
+# of vertice: 42662
+# of faces  83448
+# of patches: 2734
+updateRatio:  1.09404 1.05414 1.05254 1.0521 1.05197 1.05153 1.05147 1.05147 1.05137 1.05136
+ It took390second(s) to finish 11 times iteration 
+character: 2 Animation: 4
+viewIds: 148  54  17  92  45  
+# of vertice: 42662
+# of faces  83448
+# of patches: 2743
+updateRatio:  1.09309 1.06913 1.06599 1.06514 1.06507 1.06487 1.0646 1.06454
+ It took256second(s) to finish 8 times iteration 
+character: 2 Animation: 5
+viewIds: 148  54  17  92  45  
+# of vertice: 42662
+# of faces  83448
+# of patches: 2561
+updateRatio:  1.09376 1.05415 1.05317 1.05173 1.05135 1.05126 1.05071 1.05055
+ It took244second(s) to finish 8 times iteration 
+character: 3 Animation: 0
+viewIds: 148  54  17  92  45  
+# of vertice: 39364
+# of faces  77976
+# of patches: 2169
+updateRatio:  1.0789 1.03446 1.03147 1.03062 1.03094 1.03099 1.03078 1.03078 1.0309 1.03092
+ It took526second(s) to finish 11 times iteration 
+character: 3 Animation: 1
+viewIds: 148  54  17  92  45  
+# of vertice: 78728
+# of faces  155952
+# of patches: 4524
+updateRatio:  1.05841 1.03485 1.03305 1.03237
+ It took161second(s) to finish 4 times iteration 
+character: 3 Animation: 2
+viewIds: 148  54  17  92  45  
+# of vertice: 39364
+# of faces  77976
+# of patches: 2178
+updateRatio:  1.07861 1.04555 1.04449
+ It took148second(s) to finish 3 times iteration 
+character: 3 Animation: 3
+viewIds: 148  54  17  92  45  
+# of vertice: 39364
+# of faces  77976
+# of patches: 2235
+updateRatio:  1.06505 1.04125 1.0384 1.03702 1.03695 1.03681 1.03586 1.03544 1.03527 1.03488
+ It took335second(s) to finish 11 times iteration 
+character: 3 Animation: 4
+viewIds: 148  54  17  92  45  
+# of vertice: 39364
+# of faces  77976
+# of patches: 2330
+updateRatio:  1.05646 1.0385 1.03742 1.03687 1.0356 1.03492 1.03456 1.03444
+ It took238second(s) to finish 8 times iteration 
+character: 3 Animation: 5
+viewIds: 148  54  17  92  45  
+# of vertice: 39364
+# of faces  77976
+# of patches: 2228
+updateRatio:  1.05894 1.0335 1.03151 1.03174 1.03167 1.03174 1.03176 1.03131 1.03115 1.03124
+ It took279second(s) to finish 11 times iteration 

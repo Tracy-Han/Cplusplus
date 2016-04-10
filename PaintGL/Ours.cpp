@@ -319,7 +319,7 @@ void setFolderPath(char *objFolder, int characterId, int aniId)
 	strcat(objFolder, Character[characterId]);
 	strcat(objFolder, "/");
 	strcat(objFolder, Animation[aniId]);
-	strcat(objFolder, "/subdiv2/");
+	strcat(objFolder, "/loop_subdiv1/");
 }
 
 void loadData(int * piIndexBuffer, float ** pfFramesVertexPositionsIn, int vertexCount, int faceCount, char* objFolder, int duration)

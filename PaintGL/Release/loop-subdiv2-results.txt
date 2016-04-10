@@ -1,0 +1,162 @@
+character: 0 Animation: 0
+viewIds: 148  54  17  92  45  
+# of vertice: 114006
+# of faces  220713
+# of patches: 5955
+updateRatio:  1.18273 1.09321 1.08332
+ It took228second(s) to finish 3 times iteration 
+character: 0 Animation: 1
+viewIds: 148  54  17  92  45  
+# of vertice: 114006
+# of faces  220713
+# of patches: 5955
+updateRatio:  1.1326 1.08953 1.08795
+ It took137second(s) to finish 3 times iteration 
+character: 0 Animation: 2
+viewIds: 148  54  17  92  45  
+# of vertice: 114006
+# of faces  220713
+# of patches: 5955
+updateRatio:  1.15216 1.09566 1.09185 1.09133
+ It took269second(s) to finish 4 times iteration 
+character: 0 Animation: 3
+viewIds: 148  54  17  92  45  
+# of vertice: 114006
+# of faces  220713
+# of patches: 5955
+updateRatio:  1.13752 1.08282 1.07978 1.0771 1.07672 1.07649 1.07636 1.07631 1.07607
+ It took436second(s) to finish 9 times iteration 
+
+character: 0 Animation: 5
+viewIds: 148  54  17  92  45  
+# of vertice: 114006
+# of faces  220713
+# of patches: 5955
+updateRatio:  1.12616 1.07806 1.07684 1.07604 1.07595 1.07588 1.07555
+ It took274second(s) to finish 7 times iteration 
+character: 1 Animation: 0
+viewIds: 148  54  17  92  45  
+# of vertice: 102282
+# of faces  201728
+# of patches: 5504
+updateRatio:  1.09777 1.04718 1.04214 1.041 1.04095 1.04091 1.04088
+ It took471second(s) to finish 7 times iteration 
+character: 1 Animation: 1
+viewIds: 148  54  17  92  45  
+# of vertice: 102282
+# of faces  201728
+# of patches: 5504
+updateRatio:  1.07234 1.04438 1.04271 1.04231
+ It took164second(s) to finish 4 times iteration 
+character: 1 Animation: 2
+viewIds: 148  54  17  92  45  
+# of vertice: 102282
+# of faces  201728
+# of patches: 5504
+updateRatio:  1.08195 1.04851 1.04643 1.04629
+ It took235second(s) to finish 4 times iteration 
+character: 1 Animation: 3
+viewIds: 148  54  17  92  45  
+# of vertice: 102282
+# of faces  201728
+# of patches: 5504
+updateRatio:  1.07168 1.04232 1.04065 1.04041 1.04038
+ It took215second(s) to finish 5 times iteration 
+character: 1 Animation: 4
+viewIds: 148  54  17  92  45  
+# of vertice: 102282
+# of faces  201728
+# of patches: 5504
+updateRatio:  1.07851 1.05293 1.05087 1.05067 1.05061 1.05062
+ It took219second(s) to finish 6 times iteration 
+character: 1 Animation: 5
+viewIds: 148  54  17  92  45  
+# of vertice: 102282
+# of faces  201728
+# of patches: 5504
+updateRatio:  1.06681 1.04032 1.04018
+ It took102second(s) to finish 3 times iteration 
+character: 2 Animation: 0
+viewIds: 148  54  17  92  45  
+# of vertice: 113019
+# of faces  222528
+# of patches: 6079
+updateRatio:  1.12185 1.06305 1.05451 1.05399
+ It took306second(s) to finish 4 times iteration 
+character: 2 Animation: 1
+viewIds: 148  54  17  92  45  
+# of vertice: 113019
+# of faces  222528
+# of patches: 6079
+updateRatio:  1.10524 1.06655 1.06322 1.06269 1.06208 1.0619 1.06185 1.06171 1.06148 1.06109
+ It took471second(s) to finish 11 times iteration 
+character: 2 Animation: 2
+viewIds: 148  54  17  92  45  
+# of vertice: 113019
+# of faces  222528
+# of patches: 6079
+updateRatio:  1.10519 1.06052 1.05694 1.05626 1.056 1.05595 1.05592 1.05587 1.05585
+ It took630second(s) to finish 9 times iteration 
+character: 2 Animation: 3
+viewIds: 148  54  17  92  45  
+# of vertice: 113019
+# of faces  222528
+# of patches: 6079
+updateRatio:  1.09548 1.04885 1.04677 1.04653 1.04619
+ It took250second(s) to finish 5 times iteration 
+character: 2 Animation: 4
+viewIds: 148  54  17  92  45  
+# of vertice: 113019
+# of faces  222528
+# of patches: 6079
+updateRatio:  1.09477 1.0658 1.06307 1.06223 1.06188 1.06185 1.06183
+ It took295second(s) to finish 7 times iteration 
+character: 2 Animation: 5
+viewIds: 148  54  17  92  45  
+# of vertice: 113019
+# of faces  222528
+# of patches: 6079
+updateRatio:  1.09459 1.04886 1.0475 1.04708 1.04696 1.04692 1.04689 1.04687
+ It took316second(s) to finish 8 times iteration 
+character: 3 Animation: 0
+viewIds: 148  54  17  92  45  
+# of vertice: 104710
+# of faces  207936
+# of patches: 5809
+updateRatio:  1.07954 1.03012 1.02661 1.02644 1.0262
+ It took340second(s) to finish 5 times iteration 
+character: 3 Animation: 1
+viewIds: 148  54  17  92  45  
+# of vertice: 104710
+# of faces  207936
+# of patches: 5809
+updateRatio:  1.06004 1.03401 1.03201 1.03143
+ It took177second(s) to finish 4 times iteration 
+character: 3 Animation: 2
+viewIds: 148  54  17  92  45  
+# of vertice: 104710
+# of faces  207936
+# of patches: 5809
+updateRatio:  1.07855 1.03999 1.0375 1.03714 1.03714 1.037 1.03699 1.03692
+ It took511second(s) to finish 8 times iteration 
+character: 3 Animation: 3
+viewIds: 148  54  17  92  45  
+# of vertice: 104710
+# of faces  207936
+# of patches: 5809
+updateRatio:  1.06365 1.03457 1.03312 1.0322 1.03183 1.0318 1.03178 1.03174 1.03173 1.03171
+ It took441second(s) to finish 11 times iteration 
+character: 3 Animation: 4
+viewIds: 148  54  17  92  45  
+# of vertice: 104710
+# of faces  207936
+# of patches: 5809
+updateRatio:  1.05398 1.03276 1.03196 1.03144 1.03124 1.03094 1.03092 1.03092 1.0308
+ It took353second(s) to finish 9 times iteration 
+character: 3 Animation: 5
+viewIds: 148  54  17  92  45  
+# of vertice: 104710
+# of faces  207936
+# of patches: 5809
+updateRatio:  1.05787 1.02916 1.02826 1.02778 1.0277 1.02762 1.02761
+ It took256second(s) to finish 7 times iteration 

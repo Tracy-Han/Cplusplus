@@ -79,11 +79,11 @@ int main(int argc, char *argv[])
 	int viewIds[5] = { 148, 54, 17, 92, 45 };
 
 	int characterId, aniId;
-	//characterId = atoi(argv[1]);
-	//aniId = atoi(argv[2]);
-	characterId = 1; aniId = 0;
+	characterId = atoi(argv[1]);
+	aniId = atoi(argv[2]);
+	//characterId = 1; aniId = 0;
 	printf("charcterIndex: %u, aniId: %u\n", characterId, aniId);
-	std::fstream outfile("subdiv2-results.txt", std::ofstream::app);
+	std::fstream outfile("loop-subdiv1-results.txt", std::ofstream::app);
 	outfile << "character: " << characterId << " Animation: " << aniId << std::endl;
 	outfile << "viewIds: ";
 	for (int i = 0; i < numClusters; i++)

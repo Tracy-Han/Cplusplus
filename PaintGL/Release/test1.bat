@@ -1,4 +1,5 @@
 
+PaintGL.exe 0 0
 PaintGL.exe 0 1
 PaintGL.exe 0 2
 PaintGL.exe 0 3

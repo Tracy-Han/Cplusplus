@@ -1,0 +1,12 @@
+character: 0 Animation: 0
+viewIds: 148  54  17  92  45  
+# of vertice: 29451
+# of faces  55179
+# of patches: 1537
+updateRatio:  1.22358 1.14128 1.12437 1.1186 1.1179
+ It took274second(s) to finish 5 times iteration 
+character: 0 Animation: 1
+viewIds: 148  54  17  92  45  
+# of vertice: 29451
+# of faces  55179
+# of patches: 1537
